@@ -80,6 +80,26 @@ public class Person {
     }
 
     /**
+     * Returns the String representation of a Set<Properties> for display
+     */
+    public String propertiesToString() {
+        if (this.properties.isEmpty()) {
+            return "None";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int index = 1;
+
+        for (Property property : this.properties) {
+            sb.append("Property ").append(index).append(":\n")
+                    .append(property.toString())
+                    .append("\n");
+            index++;
+        }
+
+        return sb.toString();
+    }
+    /**
      * Returns true if the person already has the given property.
      */
     public boolean hasProperty(Property property) {

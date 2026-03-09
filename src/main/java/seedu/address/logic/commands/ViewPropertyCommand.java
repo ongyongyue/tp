@@ -1,13 +1,14 @@
 package seedu.address.logic.commands;
 
 import java.util.List;
+import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Property;
+import seedu.address.model.property.Property;
 
 /**
  * Displays the property information of a person.
@@ -36,12 +37,11 @@ public class ViewPropertyCommand extends Command {
 
         Person personToView = lastShownList.get(index.getZeroBased());
 
-        if (personToView.getProperty() == null) {
+        if (personToView.getProperties().isEmpty()) {
             throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
         }
 
-        Property property = personToView.getProperty();
 
-        return new CommandResult(property.toString());
+        return new CommandResult(personToView.propertiesToString());
     }
 }

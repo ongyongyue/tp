@@ -13,6 +13,9 @@ public class Property {
     private final String price;
     private final String size;
 
+    /**
+     * Constructs a {@code Property}.
+     */
     public Property(Name owner, Address address, String type, String price, String size) {
         requireNonNull(owner);
         requireNonNull(address);
@@ -27,22 +30,37 @@ public class Property {
         this.size = size;
     }
 
+    /**
+     * Returns the property owner.
+     */
     public Name getOwner() {
         return owner;
     }
 
+    /**
+     * Returns the property address.
+     */
     public Address getAddress() {
         return address;
     }
 
+    /**
+     * Returns the property type.
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Returns the property price.
+     */
     public String getPrice() {
         return price;
     }
 
+    /**
+     * Returns the property size.
+     */
     public String getSize() {
         return size;
     }
@@ -50,17 +68,15 @@ public class Property {
     @Override
     public String toString() {
         return String.format(
-                "Owner: %s\n" +
-                "Address: %s\n" +
-                "Type: %s\n" +
-                "Price : S$%s\n" +
-                "Size : %s\n",
-                this.getOwner(),
-                this.getAddress(),
-                this.getType(),
-                this.getPrice(),
-                this.getSize()
-        );
-
+                "Owner: %s\n"
+                        + "Address: %s\n"
+                        + "Type: %s\n"
+                        + "Price: S$%s\n"
+                        + "Size: %s\n",
+                getOwner(),
+                getAddress(),
+                getType(),
+                getPrice(),
+                getSize());
     }
 }

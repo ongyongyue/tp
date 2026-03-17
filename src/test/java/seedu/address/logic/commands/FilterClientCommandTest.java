@@ -21,9 +21,9 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
- * Contains integration tests (interaction with the Model) for {@code ViewClientCommand}.
+ * Contains integration tests (interaction with the Model) for {@code FilterClientCommand}.
  */
-public class ViewClientCommandTest {
+public class FilterClientCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
     private Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
@@ -34,14 +34,14 @@ public class ViewClientCommandTest {
         NameContainsKeywordsPredicate secondPredicate =
                 new NameContainsKeywordsPredicate(Collections.singletonList("second"));
 
-        ViewClientCommand findFirstCommand = new ViewClientCommand(firstPredicate);
-        ViewClientCommand findSecondCommand = new ViewClientCommand(secondPredicate);
+        FilterClientCommand findFirstCommand = new FilterClientCommand(firstPredicate);
+        FilterClientCommand findSecondCommand = new FilterClientCommand(secondPredicate);
 
         // same object -> returns true
         assertTrue(findFirstCommand.equals(findFirstCommand));
 
         // same values -> returns true
-        ViewClientCommand findFirstCommandCopy = new ViewClientCommand(firstPredicate);
+        FilterClientCommand findFirstCommandCopy = new FilterClientCommand(firstPredicate);
         assertTrue(findFirstCommand.equals(findFirstCommandCopy));
 
         // different types -> returns false
@@ -58,7 +58,7 @@ public class ViewClientCommandTest {
     public void execute_zeroKeywords_noPersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         NameContainsKeywordsPredicate predicate = preparePredicate(" ");
-        ViewClientCommand command = new ViewClientCommand(predicate);
+        FilterClientCommand command = new FilterClientCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
@@ -68,7 +68,7 @@ public class ViewClientCommandTest {
     public void execute_multipleKeywords_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         NameContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
-        ViewClientCommand command = new ViewClientCommand(predicate);
+        FilterClientCommand command = new FilterClientCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Arrays.asList(CARL, ELLE, FIONA), model.getFilteredPersonList());
@@ -77,9 +77,9 @@ public class ViewClientCommandTest {
     @Test
     public void toStringMethod() {
         NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(Arrays.asList("keyword"));
-        ViewClientCommand viewClientCommand = new ViewClientCommand(predicate);
-        String expected = ViewClientCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
-        assertEquals(expected, viewClientCommand.toString());
+        FilterClientCommand filterClientCommand = new FilterClientCommand(predicate);
+        String expected = FilterClientCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
+        assertEquals(expected, filterClientCommand.toString());
     }
 
     /**

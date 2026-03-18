@@ -11,8 +11,15 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.property.Price;
+import seedu.address.model.property.Property;
+import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
+import seedu.address.model.property.Size;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -84,6 +91,42 @@ public class PersonTest {
         // different tags -> returns false
         editedAlice = new PersonBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
+    }
+
+    @Test
+    public void hasHdbProperty() {
+        // Person with HDB property -> returns true
+        Property hdbProperty = new Property(
+                new PropertyAddress("123 HDB Street"),
+                new Price("500000"),
+                new Size("1000"),
+                new PropertyType("HDB")
+        );
+        Person personWithHdb = new PersonBuilder(ALICE).withProperties(Set.of(hdbProperty)).build();
+        assertTrue(personWithHdb.hasHdbProperty());
+
+        // Person with non-HDB property -> returns false
+        Property condoProperty = new Property(
+                new PropertyAddress("456 Condo Ave"),
+                new Price("1000000"),
+                new Size("1500"),
+                new PropertyType("Condo")
+        );
+        Person personWithCondo = new PersonBuilder(ALICE).withProperties(Set.of(condoProperty)).build();
+        assertFalse(personWithCondo.hasHdbProperty());
+
+        // Person with no properties -> returns false
+        Person personWithNoProperties = new PersonBuilder(ALICE).withProperties(Set.of()).build();
+        assertFalse(personWithNoProperties.hasHdbProperty());
+
+        // Person with property without type -> returns false
+        Property propertyWithoutType = new Property(
+                new PropertyAddress("789 No Type Road"),
+                new Price("600000"),
+                new Size("1200")
+        );
+        Person personWithUntypedProperty = new PersonBuilder(ALICE).withProperties(Set.of(propertyWithoutType)).build();
+        assertFalse(personWithUntypedProperty.hasHdbProperty());
     }
 
     @Test

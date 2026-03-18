@@ -101,6 +101,15 @@ public class Person {
     }
 
     /**
+     * Returns true if the person already has an HDB property.
+     */
+    public boolean hasHdbProperty() {
+        return properties.stream()
+                .anyMatch(property -> property.getPropertyType() != null
+                        && property.getPropertyType().toString().equalsIgnoreCase("HDB"));
+    }
+
+    /**
      * Returns a new person with the given property added.
      */
     public Person addProperty(Property property) {

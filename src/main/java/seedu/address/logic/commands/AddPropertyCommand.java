@@ -40,6 +40,8 @@ public class AddPropertyCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New property added to person: %1$s\n%2$s";
     public static final String MESSAGE_DUPLICATE_PROPERTY = "This person already has this property.";
+    public static final String MESSAGE_DUPLICATE_HDB_PROPERTY = "This person already has an HDB property. "
+            + "Each person can only have a maximum of 1 HDB property.";
     public static final String MESSAGE_NO_PERSONS = "No clients found. Please add a client first.";
 
     private final Index targetIndex;
@@ -84,6 +86,13 @@ public class AddPropertyCommand extends Command {
 
         if (personToEdit.hasProperty(property)) {
             throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+        }
+
+        // Check if trying to add an HDB property when person already has one
+        if (property.getPropertyType() != null
+                && property.getPropertyType().toString().equalsIgnoreCase("HDB")
+                && personToEdit.hasHdbProperty()) {
+            throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
         }
 
         Person editedPerson = personToEdit.addProperty(property);

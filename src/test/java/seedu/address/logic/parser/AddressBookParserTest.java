@@ -19,10 +19,10 @@ import seedu.address.logic.commands.DeleteClientCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.FilterClientCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.RemarkPropertyCommand;
-import seedu.address.logic.commands.ViewClientCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -70,11 +70,11 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_viewClient() throws Exception {
+    public void parseCommand_filterClient() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
-        ViewClientCommand command = (ViewClientCommand) parser.parseCommand(
-                ViewClientCommand.COMMAND_WORD + " n/" + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new ViewClientCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        FilterClientCommand command = (FilterClientCommand) parser.parseCommand(
+                FilterClientCommand.COMMAND_WORD + " n/" + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterClientCommand(new NameContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test

@@ -8,11 +8,11 @@ import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
 /**
- * Displays the property information of a person.
+ * Shows only clients whose names contain any of the specified keywords.
  */
-public class ViewClientCommand extends Command {
+public class FilterClientCommand extends Command {
 
-    public static final String COMMAND_WORD = "viewClient";
+    public static final String COMMAND_WORD = "filterClient";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all persons whose names contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
@@ -21,7 +21,7 @@ public class ViewClientCommand extends Command {
 
     private final NameContainsKeywordsPredicate predicate;
 
-    public ViewClientCommand(NameContainsKeywordsPredicate predicate) {
+    public FilterClientCommand(NameContainsKeywordsPredicate predicate) {
         this.predicate = predicate;
     }
 
@@ -40,11 +40,11 @@ public class ViewClientCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof ViewClientCommand)) {
+        if (!(other instanceof FilterClientCommand)) {
             return false;
         }
 
-        ViewClientCommand otherViewClientCommand = (ViewClientCommand) other;
+        FilterClientCommand otherViewClientCommand = (FilterClientCommand) other;
         return predicate.equals(otherViewClientCommand.predicate);
     }
 

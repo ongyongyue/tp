@@ -8,28 +8,28 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.ViewClientCommand;
+import seedu.address.logic.commands.FilterClientCommand;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 
-public class ViewClientCommandParserTest {
+public class FilterClientCommandParserTest {
 
-    private ViewClientCommandParser parser = new ViewClientCommandParser();
+    private FilterClientCommandParser parser = new FilterClientCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
         assertParseFailure(parser, "Alice", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                 ViewClientCommand.MESSAGE_USAGE));
+                 FilterClientCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_validArgs_returnsViewClientCommand() {
+    public void parse_validArgs_returnsFilterClientCommand() {
         // no leading and trailing whitespaces
-        ViewClientCommand expectedViewClientCommand =
-                new ViewClientCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
-        assertParseSuccess(parser, " n/Alice Bob", expectedViewClientCommand);
+        FilterClientCommand expectedFilterClientCommand =
+                new FilterClientCommand(new NameContainsKeywordsPredicate(Arrays.asList("Alice", "Bob")));
+        assertParseSuccess(parser, " n/Alice Bob", expectedFilterClientCommand);
 
         // multiple whitespaces between keywords
-        assertParseSuccess(parser, " n/ Alice \n \t Bob  \t", expectedViewClientCommand);
+        assertParseSuccess(parser, " n/ Alice \n \t Bob  \t", expectedFilterClientCommand);
     }
 
 }

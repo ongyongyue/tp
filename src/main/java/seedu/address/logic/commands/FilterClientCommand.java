@@ -29,6 +29,8 @@ public class FilterClientCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredPersonList(predicate);
+        model.updateFilteredPropertyList(property -> model.getFilteredPersonList().stream()
+                .anyMatch(person -> person.getProperties().contains(property)));
         return new CommandResult(
                 String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
     }

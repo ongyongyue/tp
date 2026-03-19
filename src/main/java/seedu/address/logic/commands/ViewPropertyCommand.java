@@ -40,8 +40,9 @@ public class ViewPropertyCommand extends Command {
         }
 
         model.updateFilteredPersonList(p -> p.isSamePerson(personToView));
+        model.updateFilteredPropertyList(p -> personToView.getProperties().contains(p));
 
         return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, 1));
+                String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()));
     }
 }

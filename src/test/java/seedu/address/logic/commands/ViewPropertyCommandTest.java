@@ -54,7 +54,7 @@ public class ViewPropertyCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, 1),
+        assertEquals(String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()),
                 result.getFeedbackToUser());
         assertEquals(person, model.getFilteredPersonList().get(0));
     }

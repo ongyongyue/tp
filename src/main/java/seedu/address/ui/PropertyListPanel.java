@@ -2,15 +2,12 @@ package seedu.address.ui;
 
 import java.util.logging.Logger;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.model.person.Person;
 import seedu.address.model.property.Property;
 
 /**
@@ -24,24 +21,12 @@ public class PropertyListPanel extends UiPart<Region> {
     private ListView<Property> propertyListView;
 
     /**
-     * Creates a {@code PropertyListPanel} that displays properties from the given person list.
+     * Creates a {@code PropertyListPanel} that displays properties from the given property list.
      */
-    public PropertyListPanel(ObservableList<Person> personList) {
+    public PropertyListPanel(ObservableList<Property> propertyList) {
         super(FXML);
+        propertyListView.setItems(propertyList);
         propertyListView.setCellFactory(listView -> new PropertyListViewCell());
-        updateProperties(personList);
-        personList.addListener((ListChangeListener<Person>) change -> updateProperties(personList));
-    }
-
-    /**
-     * Updates the property list view with properties from all persons in the list.
-     */
-    private void updateProperties(ObservableList<Person> personList) {
-        ObservableList<Property> properties = FXCollections.observableArrayList();
-        for (Person person : personList) {
-            properties.addAll(person.getProperties());
-        }
-        propertyListView.setItems(properties);
     }
 
     /**

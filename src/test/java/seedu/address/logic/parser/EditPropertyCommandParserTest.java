@@ -42,7 +42,7 @@ public class EditPropertyCommandParserTest {
         Index clientIndex = Index.fromOneBased(1);
         Index propertyIndex = Index.fromOneBased(1);
 
-        String userInput = "1 l/1" + ADDRESS_DESC_AMY + PRICE_DESC_AMY + SIZE_DESC_AMY;
+        String userInput = "1 i/1" + ADDRESS_DESC_AMY + PRICE_DESC_AMY + SIZE_DESC_AMY;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress(VALID_ADDRESS_AMY));
@@ -63,19 +63,19 @@ public class EditPropertyCommandParserTest {
         EditPropertyDescriptor addressDescriptor = new EditPropertyDescriptor();
         addressDescriptor.setAddress(new PropertyAddress(VALID_ADDRESS_AMY));
         assertParseSuccess(parser,
-                "1 l/1" + ADDRESS_DESC_AMY,
+                "1 i/1" + ADDRESS_DESC_AMY,
                 new EditPropertyCommand(clientIndex, propertyIndex, addressDescriptor));
 
         EditPropertyDescriptor priceDescriptor = new EditPropertyDescriptor();
         priceDescriptor.setPrice(new Price(VALID_PRICE_AMY));
         assertParseSuccess(parser,
-                "1 l/1" + PRICE_DESC_AMY,
+                "1 i/1" + PRICE_DESC_AMY,
                 new EditPropertyCommand(clientIndex, propertyIndex, priceDescriptor));
 
         EditPropertyDescriptor sizeDescriptor = new EditPropertyDescriptor();
         sizeDescriptor.setSize(new Size(VALID_SIZE_AMY));
         assertParseSuccess(parser,
-                "1 l/1" + SIZE_DESC_AMY,
+                "1 i/1" + SIZE_DESC_AMY,
                 new EditPropertyCommand(clientIndex, propertyIndex, sizeDescriptor));
     }
 
@@ -84,7 +84,7 @@ public class EditPropertyCommandParserTest {
         Index clientIndex = Index.fromOneBased(2);
         Index propertyIndex = Index.fromOneBased(3);
 
-        String userInput = "2 l/3" + ADDRESS_DESC_BOB + PRICE_DESC_BOB + SIZE_DESC_BOB;
+        String userInput = "2 i/3" + ADDRESS_DESC_BOB + PRICE_DESC_BOB + SIZE_DESC_BOB;
 
         EditPropertyDescriptor descriptor = new EditPropertyDescriptor();
         descriptor.setAddress(new PropertyAddress(VALID_ADDRESS_BOB));
@@ -102,7 +102,7 @@ public class EditPropertyCommandParserTest {
         Index clientIndex = Index.fromOneBased(1);
         Index propertyIndex = Index.fromOneBased(1);
 
-        String userInput = "1 l/1"
+        String userInput = "1 i/1"
                 + ADDRESS_DESC_AMY + ADDRESS_DESC_BOB
                 + PRICE_DESC_AMY + PRICE_DESC_BOB
                 + SIZE_DESC_AMY + SIZE_DESC_BOB;
@@ -121,7 +121,7 @@ public class EditPropertyCommandParserTest {
     @Test
     public void parse_missingClientIndex_failure() {
         assertParseFailure(parser,
-                " l/1" + ADDRESS_DESC_AMY,
+                " i/1" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
     }
 
@@ -135,58 +135,58 @@ public class EditPropertyCommandParserTest {
     @Test
     public void parse_invalidClientIndex_failure() {
         assertParseFailure(parser,
-                "0 l/1" + ADDRESS_DESC_AMY,
+                "0 i/1" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
 
         assertParseFailure(parser,
-                "-1 l/1" + ADDRESS_DESC_AMY,
+                "-1 i/1" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
 
         assertParseFailure(parser,
-                "abc l/1" + ADDRESS_DESC_AMY,
+                "abc i/1" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
     }
 
     @Test
     public void parse_invalidPropertyIndex_failure() {
         assertParseFailure(parser,
-                "1 l/0" + ADDRESS_DESC_AMY,
+                "1 i/0" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
 
         assertParseFailure(parser,
-                "1 l/-1" + ADDRESS_DESC_AMY,
+                "1 i/-1" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
 
         assertParseFailure(parser,
-                "1 l/abc" + ADDRESS_DESC_AMY,
+                "1 i/abc" + ADDRESS_DESC_AMY,
                 MESSAGE_INVALID_FORMAT);
     }
 
     @Test
     public void parse_noFieldsSpecified_failure() {
         assertParseFailure(parser,
-                "1 l/1",
+                "1 i/1",
                 EditPropertyCommand.MESSAGE_NOT_EDITED);
     }
 
     @Test
     public void parse_invalidAddress_failure() {
         assertParseFailure(parser,
-                "1 l/1" + INVALID_ADDRESS_DESC,
+                "1 i/1" + INVALID_ADDRESS_DESC,
                 PropertyAddress.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidPrice_failure() {
         assertParseFailure(parser,
-                "1 l/1" + INVALID_PRICE_DESC,
+                "1 i/1" + INVALID_PRICE_DESC,
                 Price.MESSAGE_CONSTRAINTS);
     }
 
     @Test
     public void parse_invalidSize_failure() {
         assertParseFailure(parser,
-                "1 l/1" + INVALID_SIZE_DESC,
+                "1 i/1" + INVALID_SIZE_DESC,
                 Size.MESSAGE_CONSTRAINTS);
     }
 }

@@ -110,9 +110,9 @@ Examples:
 * `addProperty l/2 a/10 Orchard Road pr/2500000 s/1800`
 
 
-### Listing all persons : `list`
+### Listing all clients and their properties : `list`
 
-Shows a list of all persons in the address book.
+Shows a list of all clients and their properties in the address book.
 
 Format: `list`
 
@@ -191,19 +191,19 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Deleting a person : `delete`
+### Deleting a property : `deleteProperty`
 
-Deletes the specified person from the address book.
+Deletes all properties of specified client from the address book.
 
-Format: `delete INDEX`
+Format: `deleteProperty INDEX`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
+* Deletes the properties of client at the specified `INDEX`.
+* The index refers to the index number shown in the displayed client list on the left.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `list` followed by `delete 2` deletes all properties of the 2nd client in the address book.
+* `find john` followed by `delete 1` deletes all properties of the 1st client named `john`.
 
 ### Clearing all entries : `clear`
 

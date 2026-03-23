@@ -5,6 +5,8 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,11 +50,11 @@ public class AddPropertyHdbLimitTest {
         );
 
         // Add first HDB property
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, hdbProperty1);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), hdbProperty1);
         addCommand1.execute(model);
 
         // Try to add second HDB property to same person
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(INDEX_FIRST_PERSON, hdbProperty2);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), hdbProperty2);
 
         assertCommandFailure(addCommand2, model, AddPropertyCommand.MESSAGE_DUPLICATE_HDB_PROPERTY);
     }
@@ -74,11 +76,12 @@ public class AddPropertyHdbLimitTest {
         );
 
         // Add HDB property to first person
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, hdbProperty1);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), hdbProperty1);
         addCommand1.execute(model);
 
         // Add HDB property to second person - this should succeed
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(Index.fromOneBased(2), hdbProperty2);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(
+                List.of(Index.fromOneBased(2)), hdbProperty2);
         CommandResult result = addCommand2.execute(model);
 
         assertTrue(result.getFeedbackToUser().contains("New property added"));
@@ -101,11 +104,11 @@ public class AddPropertyHdbLimitTest {
         );
 
         // Add first Condo property
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, condoProperty1);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), condoProperty1);
         addCommand1.execute(model);
 
         // Add second Condo property to same person - this should succeed
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(INDEX_FIRST_PERSON, condoProperty2);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), condoProperty2);
         CommandResult result = addCommand2.execute(model);
 
         assertTrue(result.getFeedbackToUser().contains("New property added"));
@@ -129,11 +132,11 @@ public class AddPropertyHdbLimitTest {
         );
 
         // Add HDB property
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, hdbProperty);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), hdbProperty);
         addCommand1.execute(model);
 
         // Add Condo property to same person - this should succeed
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(INDEX_FIRST_PERSON, condoProperty);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), condoProperty);
         CommandResult result = addCommand2.execute(model);
 
         assertTrue(result.getFeedbackToUser().contains("New property added"));
@@ -154,11 +157,11 @@ public class AddPropertyHdbLimitTest {
         );
 
         // Add first property without type
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, propertyNoType);
+        AddPropertyCommand addCommand1 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), propertyNoType);
         addCommand1.execute(model);
 
         // Add second property without type - should succeed
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(INDEX_FIRST_PERSON, propertyNoType2);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), propertyNoType2);
         CommandResult result = addCommand2.execute(model);
 
         assertTrue(result.getFeedbackToUser().contains("New property added"));

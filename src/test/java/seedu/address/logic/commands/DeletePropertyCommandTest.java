@@ -10,6 +10,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -35,7 +37,7 @@ public class DeletePropertyCommandTest {
     @Test
     public void execute_validIndexUnfilteredList_success() throws CommandException {
         // Add property to the first person
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
+        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON),
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
                 new Size("1200")));
         addPropertyCommand.execute(model);
@@ -74,7 +76,7 @@ public class DeletePropertyCommandTest {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
         // Add property to the first person
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
+        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON),
                 new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
                 new Size("1200")));
         addPropertyCommand.execute(model);

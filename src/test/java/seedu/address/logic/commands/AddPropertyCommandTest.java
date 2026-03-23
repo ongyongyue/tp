@@ -3,11 +3,14 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.AddPropertyCommand.MESSAGE_INVALID_PERSON_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,14 +41,14 @@ public class AddPropertyCommandTest {
 
     @Test
     public void constructor_nullProperty_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new AddPropertyCommand(INDEX_FIRST_PERSON, null));
+        assertThrows(NullPointerException.class, () -> new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), null));
     }
 
     @Test
     public void execute_validIndexUnfilteredList_success() throws CommandException {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
-        AddPropertyCommand addCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand addCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
 
         Person editedPerson = personToEdit.addProperty(validProperty);
 
@@ -64,72 +67,63 @@ public class AddPropertyCommandTest {
     @Test
     public void execute_invalidIndexUnfilteredList_throwsCommandException() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
-        AddPropertyCommand addCommand = new AddPropertyCommand(outOfBoundIndex, validProperty);
+        AddPropertyCommand addCommand = new AddPropertyCommand(List.of(outOfBoundIndex), validProperty);
 
-        assertCommandFailure(addCommand, model, "The person index provided is invalid.");
+        assertCommandFailure(addCommand, model, MESSAGE_INVALID_PERSON_INDEX);
     }
 
     @Test
     public void execute_duplicateProperty_throwsCommandException() throws CommandException {
-        AddPropertyCommand addCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand addCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
         addCommand.execute(model);
 
-        AddPropertyCommand duplicateCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand duplicateCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
 
         assertCommandFailure(duplicateCommand, model, AddPropertyCommand.MESSAGE_DUPLICATE_PROPERTY);
-    }
-
-    @Test
-    public void execute_samePropertyToDifferentPersons_success() throws CommandException {
-        Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-
-        AddPropertyCommand addCommand1 = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(
-                Index.fromOneBased(2), validProperty);
-
-        Person personToEdit1 = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person editedPerson1 = personToEdit1.addProperty(validProperty);
-
-        String expectedMessage1 = String.format(
-                AddPropertyCommand.MESSAGE_SUCCESS,
-                personToEdit1.getName(),
-                validProperty
-        );
-
-        Model expectedModel1 = new ModelManager(testModel.getAddressBook(), new UserPrefs());
-        expectedModel1.setPerson(personToEdit1, editedPerson1);
-
-        assertCommandSuccess(addCommand1, testModel, expectedMessage1, expectedModel1);
-
-        // Now execute the second command on the updated model
-        Person personToEdit2 = testModel.getFilteredPersonList().get(1);
-
-        String expectedMessage2 = String.format(
-                AddPropertyCommand.MESSAGE_SUCCESS,
-                personToEdit2.getName(),
-                validProperty
-        );
-
-        CommandResult result = addCommand2.execute(testModel);
-        assertEquals(expectedMessage2, result.getFeedbackToUser());
     }
 
     @Test
     public void execute_noPersons_throwsCommandException() {
         Model emptyModel = new ModelManager();
 
-        AddPropertyCommand addCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand addCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
 
         assertCommandFailure(addCommand, emptyModel, AddPropertyCommand.MESSAGE_NO_PERSONS);
     }
 
     @Test
+    public void execute_multiplePersons_success() {
+        Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+        AddPropertyCommand addCommand = new AddPropertyCommand(
+                List.of(INDEX_FIRST_PERSON, Index.fromOneBased(2)), validProperty);
+
+        Person firstPersonToEdit = testModel.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonToEdit = testModel.getFilteredPersonList().get(Index.fromOneBased(2).getZeroBased());
+
+        Person firstEditedPerson = firstPersonToEdit.addProperty(validProperty);
+        Person secondEditedPerson = secondPersonToEdit.addProperty(validProperty);
+
+        String expectedMessage = String.format(
+                AddPropertyCommand.MESSAGE_SUCCESS,
+                firstPersonToEdit.getName() + ", " + secondPersonToEdit.getName(),
+                validProperty
+        );
+
+        Model expectedModel = new ModelManager(testModel.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(firstPersonToEdit, firstEditedPerson);
+        expectedModel.setPerson(secondPersonToEdit, secondEditedPerson);
+
+        assertCommandSuccess(addCommand, testModel, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void equals() {
-        AddPropertyCommand firstCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
-        AddPropertyCommand secondCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
+        AddPropertyCommand firstCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
+        AddPropertyCommand secondCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON),
                 new Property(new PropertyAddress("123 Street"), new Price("500000"), new Size("1000")));
 
-        AddPropertyCommand firstCommandCopy = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand firstCommandCopy = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
 
         assertTrue(firstCommand.equals(firstCommand));
         assertTrue(firstCommand.equals(firstCommandCopy));
@@ -140,9 +134,9 @@ public class AddPropertyCommandTest {
 
     @Test
     public void toStringMethod() {
-        AddPropertyCommand command = new AddPropertyCommand(INDEX_FIRST_PERSON, validProperty);
+        AddPropertyCommand command = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), validProperty);
         String expected = AddPropertyCommand.class.getCanonicalName()
-                + "{targetIndex=" + INDEX_FIRST_PERSON + ", property=" + validProperty + "}";
+                + "{targetIndices=" + List.of(INDEX_FIRST_PERSON) + ", property=" + validProperty + "}";
         assertEquals(expected, command.toString());
     }
 }

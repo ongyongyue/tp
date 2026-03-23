@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
 
-class ViewPropertyCommandParserTest {
+class ViewClientCommandParserTest {
 
-    private final ViewPropertyCommandParser parser = new ViewPropertyCommandParser();
+    private final ViewClientCommandParser parser = new ViewClientCommandParser();
 
     @Test
     void parse_invalidArgs_throwsParseException() {

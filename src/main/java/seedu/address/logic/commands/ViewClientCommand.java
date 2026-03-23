@@ -9,18 +9,18 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Displays the property information of a person.
+ * Displays the information of a client and the properties that the client owns.
  */
-public class ViewPropertyCommand extends Command {
+public class ViewClientCommand extends Command {
 
-    public static final String COMMAND_WORD = "viewProperty";
+    public static final String COMMAND_WORD = "viewClient";
 
     private final Index index;
 
     /**
-     * Creates a ViewPropertyCommand to view the property of the specified person.
+     * Creates a ViewClientCommand to view the information of the specified person.
      */
-    public ViewPropertyCommand(Index index) {
+    public ViewClientCommand(Index index) {
         this.index = index;
     }
 
@@ -35,12 +35,9 @@ public class ViewPropertyCommand extends Command {
 
         Person personToView = lastShownList.get(index.getZeroBased());
 
-        if (personToView.getProperties().isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
-        }
-
         model.updateFilteredPersonList(p -> p.isSamePerson(personToView));
-        model.updateFilteredPropertyList(p -> personToView.getProperties().contains(p));
+        model.updateFilteredPropertyList(
+                p -> lastShownList.stream().anyMatch(person -> person.getProperties().contains(p)));
 
         return new CommandResult(
                 String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()));

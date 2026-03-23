@@ -9,6 +9,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -44,9 +46,9 @@ public class ViewPropertyCommandTest {
         );
 
         // Add properties
-        new AddPropertyCommand(INDEX_FIRST_PERSON, propertyA).execute(model);
-        new AddPropertyCommand(INDEX_SECOND_PERSON, propertyAWithDifferentDetails).execute(model);
-        new AddPropertyCommand(INDEX_THIRD_PERSON, propertyB).execute(model);
+        new AddPropertyCommand(List.of(INDEX_FIRST_PERSON), propertyA).execute(model);
+        new AddPropertyCommand(List.of(INDEX_SECOND_PERSON), propertyAWithDifferentDetails).execute(model);
+        new AddPropertyCommand(List.of(INDEX_THIRD_PERSON), propertyB).execute(model);
 
         return model;
     }

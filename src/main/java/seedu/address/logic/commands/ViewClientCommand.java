@@ -42,4 +42,19 @@ public class ViewClientCommand extends Command {
         return new CommandResult(
                 String.format(Messages.MESSAGE_PROPERTIES_LISTED_OVERVIEW, model.getFilteredPropertyList().size()));
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        // instanceof handles nulls
+        if (!(other instanceof ViewClientCommand)) {
+            return false;
+        }
+
+        ViewClientCommand otherViewClientCommand = (ViewClientCommand) other;
+        return index.equals(otherViewClientCommand.index);
+    }
 }

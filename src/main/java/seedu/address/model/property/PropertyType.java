@@ -27,11 +27,11 @@ public class PropertyType {
         }
         this.value = normalizePropertyType(propertyType);
     }
-        /**
-        * Sets the tag to either Condo or Property, non-case sensitive
-        *
-        * @param input A valid property type string.
-        */
+    /**
+    * Sets the tag to either Condo or Property, non-case sensitive
+    *
+    * @param input A valid property type string.
+    */
     public static String normalizePropertyType(String input) {
         if (input.equalsIgnoreCase("hdb")) {
             return "HDB";

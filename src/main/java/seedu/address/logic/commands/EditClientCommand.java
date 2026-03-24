@@ -69,6 +69,9 @@ public class EditClientCommand extends Command {
         }
 
         model.setPerson(personToEdit, editedPerson);
+
+        model.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
+        model.updateFilteredPropertyList(p -> editedPerson.getProperties().contains(p));
         return new CommandResult(String.format(MESSAGE_EDIT_CLIENT_SUCCESS, editedPerson));
     }
 

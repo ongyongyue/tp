@@ -74,6 +74,8 @@ public class EditPropertyCommandTest {
 
         Model expectedModel = new ModelManager(editModel.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
+        expectedModel.updateFilteredPropertyList(p -> p.equals(editedProperty));
 
         assertCommandSuccess(editCommand, editModel, expectedMessage, expectedModel);
     }

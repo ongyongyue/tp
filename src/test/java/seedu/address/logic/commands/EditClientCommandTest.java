@@ -48,6 +48,8 @@ public class EditClientCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(personToEdit, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
+        expectedModel.updateFilteredPropertyList(p -> editedPerson.getProperties().contains(p));
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
@@ -72,6 +74,8 @@ public class EditClientCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(lastPerson, editedPerson);
+        expectedModel.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
+        expectedModel.updateFilteredPropertyList(p -> editedPerson.getProperties().contains(p));
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }

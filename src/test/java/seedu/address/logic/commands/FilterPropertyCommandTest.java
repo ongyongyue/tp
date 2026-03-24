@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -123,6 +124,6 @@ public class FilterPropertyCommandTest {
     private void addPropertyToModel(Model model, Index index, String address, String price, String size)
             throws Exception {
         Property property = new Property(new PropertyAddress(address), new Price(price), new Size(size));
-        new AddPropertyCommand(index, property).execute(model);
+        new AddPropertyCommand(List.of(index), property).execute(model);
     }
 }

@@ -119,6 +119,15 @@ public class Person {
     }
 
     /**
+     * Returns a new person with the given property removed.
+     */
+    public Person removeProperty(Property property) {
+        Set<Property> updatedProperties = new LinkedHashSet<>(properties);
+        updatedProperties.remove(property);
+        return new Person(name, phone, email, tags, updatedProperties);
+    }
+
+    /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
      */

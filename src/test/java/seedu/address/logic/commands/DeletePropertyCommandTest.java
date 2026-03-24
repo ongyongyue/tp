@@ -4,14 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
-import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PROPERTY;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PROPERTY;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -20,11 +18,12 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
 import seedu.address.model.property.Size;
+import seedu.address.testutil.TypicalIndexes;
+import seedu.address.testutil.TypicalPersons;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -32,102 +31,100 @@ import seedu.address.model.property.Size;
  */
 public class DeletePropertyCommandTest {
 
-    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+    private Model model;
+
+    @BeforeEach
+    public void setUp() {
+        model = new ModelManager(TypicalPersons.getTypicalAddressBook(), new UserPrefs());
+    }
 
     @Test
     public void execute_validIndexUnfilteredList_success() throws CommandException {
-        // Add property to the first person
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON),
-                new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+        // Add a property to test
+        Property testProperty = new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"));
+        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(TypicalIndexes.INDEX_FIRST_PERSON),
+                testProperty);
         addPropertyCommand.execute(model);
 
-        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PERSON);
+        // Get the property from the list
+        List<Property> propertyList = model.getFilteredPropertyList();
+        assertTrue(!propertyList.isEmpty(), "Property should be added");
 
-        Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(),
-                personToEdit.getEmail(), personToEdit.getTags());
+        int initialPropertyCount = model.getFilteredPropertyList().size();
 
-        String expectedMessage = String.format(DeletePropertyCommand.MESSAGE_SUCCESS, Messages.format(editedPerson));
+        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PROPERTY);
+        String expectedMessage = String.format(DeletePropertyCommand.MESSAGE_SUCCESS, testProperty);
+        CommandResult result = deleteCommand.execute(model);
 
-        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(personToEdit, editedPerson);
-
-        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+        assertEquals(expectedMessage, result.getFeedbackToUser());
+        assertEquals(initialPropertyCount - 1, model.getFilteredPropertyList().size());
     }
 
     @Test
     public void execute_invalidIndexUnfilteredList_throwsCommandException() {
-        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
+        // Add a property first
+        Property testProperty = new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"));
+        try {
+            AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(TypicalIndexes.INDEX_FIRST_PERSON),
+                    testProperty);
+            addPropertyCommand.execute(model);
+        } catch (CommandException e) {
+            // Ignore
+        }
+
+        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPropertyList().size() + 1);
         DeletePropertyCommand deleteCommand = new DeletePropertyCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteCommand, model, "The person index provided is invalid.");
+        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
     }
 
     @Test
     public void execute_noProperties_throwsCommandException() {
-        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PERSON);
+        // Model has no properties by default
+        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PROPERTY);
 
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_NO_PROPERTY);
+        assertCommandFailure(deleteCommand, model, DeletePropertyCommand.MESSAGE_NO_PROPERTIES);
     }
 
     @Test
-    public void execute_validIndexFilteredList_success() throws CommandException {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+    public void execute_deleteMultipleProperties_success() throws CommandException {
+        // Add two properties
+        Property property1 = new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"));
+        Property property2 = new Property(new PropertyAddress("412 Clementi Ave 3, #03-25"),
+                new Price("1500000"), new Size("1500"));
 
-        // Add property to the first person
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(List.of(INDEX_FIRST_PERSON),
-                new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
-        addPropertyCommand.execute(model);
+        AddPropertyCommand addPropertyCommand1 = new AddPropertyCommand(List.of(TypicalIndexes.INDEX_FIRST_PERSON),
+                property1);
+        addPropertyCommand1.execute(model);
 
-        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PERSON);
+        AddPropertyCommand addPropertyCommand2 = new AddPropertyCommand(List.of(TypicalIndexes.INDEX_SECOND_PERSON),
+                property2);
+        addPropertyCommand2.execute(model);
 
-        Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(),
-                personToEdit.getEmail(), personToEdit.getTags());
+        assertEquals(2, model.getFilteredPropertyList().size());
 
-        String expectedMessage = String.format(DeletePropertyCommand.MESSAGE_SUCCESS, Messages.format(editedPerson));
+        // Delete first property
+        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PROPERTY);
+        String expectedMessage = String.format(DeletePropertyCommand.MESSAGE_SUCCESS, property1);
+        CommandResult result = deleteCommand.execute(model);
 
-        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setPerson(personToEdit, editedPerson);
-        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
-
-        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
-    }
-
-    @Test
-    public void execute_invalidIndexFilteredList_throwsCommandException() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
-
-        Index outOfBoundIndex = INDEX_SECOND_PERSON;
-        // ensures that outOfBoundIndex is still in bounds of address book list
-        assertTrue(outOfBoundIndex.getZeroBased() < model.getAddressBook().getPersonList().size());
-
-        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(outOfBoundIndex);
-
-        assertCommandFailure(deleteCommand, model, "The person index provided is invalid.");
-    }
-
-    @Test
-    public void execute_filteredListNoProperties_throwsCommandException() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
-
-        DeletePropertyCommand deleteCommand = new DeletePropertyCommand(INDEX_FIRST_PERSON);
-
-        assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_NO_PROPERTY);
+        assertEquals(expectedMessage, result.getFeedbackToUser());
+        assertEquals(1, model.getFilteredPropertyList().size());
     }
 
     @Test
     public void equals() {
-        DeletePropertyCommand deleteFirstCommand = new DeletePropertyCommand(INDEX_FIRST_PERSON);
-        DeletePropertyCommand deleteSecondCommand = new DeletePropertyCommand(INDEX_SECOND_PERSON);
+        DeletePropertyCommand deleteFirstCommand = new DeletePropertyCommand(INDEX_FIRST_PROPERTY);
+        DeletePropertyCommand deleteSecondCommand = new DeletePropertyCommand(INDEX_SECOND_PROPERTY);
 
         // same object -> returns true
         assertTrue(deleteFirstCommand.equals(deleteFirstCommand));
 
         // same values -> returns true
-        DeletePropertyCommand deleteFirstCommandCopy = new DeletePropertyCommand(INDEX_FIRST_PERSON);
+        DeletePropertyCommand deleteFirstCommandCopy = new DeletePropertyCommand(INDEX_FIRST_PROPERTY);
         assertTrue(deleteFirstCommand.equals(deleteFirstCommandCopy));
 
         // different types -> returns false
@@ -136,7 +133,7 @@ public class DeletePropertyCommandTest {
         // null -> returns false
         assertFalse(deleteFirstCommand.equals(null));
 
-        // different person -> returns false
+        // different property -> returns false
         assertFalse(deleteFirstCommand.equals(deleteSecondCommand));
     }
 
@@ -147,13 +144,5 @@ public class DeletePropertyCommandTest {
         String expected = DeletePropertyCommand.class.getSimpleName() + "{index=" + targetIndex + "}";
         assertEquals(expected, deleteCommand.toString());
     }
-
-    /**
-     * Updates {@code model}'s filtered list to show no one.
-     */
-    private void showNoPerson(Model model) {
-        model.updateFilteredPersonList(p -> false);
-
-        assertTrue(model.getFilteredPersonList().isEmpty());
-    }
 }
+

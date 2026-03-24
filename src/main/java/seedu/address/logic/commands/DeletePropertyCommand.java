@@ -7,26 +7,27 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.property.Property;
 
 /**
- * Deletes the property information of a person.
+ * Deletes a property at a specified index from the property list.
  */
 public class DeletePropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "deleteProperty";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes the property of the person identified "
-            + "by the index number used in the displayed person list.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Deletes the property identified "
+            + "by the index number used in the displayed property list.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_SUCCESS = "Properties deleted from person: %1$s";
-    public static final String MESSAGE_NO_PERSONS = "No clients found. Please add a client first.";
+    public static final String MESSAGE_SUCCESS = "Property deleted: %1$s";
+    public static final String MESSAGE_NO_PROPERTIES = "No properties found. Please add a property first.";
 
     private final Index index;
 
     /**
-     * Creates a DeletePropertyCommand to delete the property of the specified person.
+     * Creates a DeletePropertyCommand to delete the property at the specified index.
      */
     public DeletePropertyCommand(Index index) {
         this.index = index;
@@ -35,28 +36,28 @@ public class DeletePropertyCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
 
-        List<Person> lastShownList = model.getFilteredPersonList();
+        List<Property> lastShownPropertyList = model.getFilteredPropertyList();
 
-        if (lastShownList.isEmpty()) {
-            throw new CommandException(MESSAGE_NO_PERSONS);
+        if (lastShownPropertyList.isEmpty()) {
+            throw new CommandException(MESSAGE_NO_PROPERTIES);
         }
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException("The person index provided is invalid.");
+        if (index.getZeroBased() >= lastShownPropertyList.size()) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
         }
 
-        Person personToEdit = lastShownList.get(index.getZeroBased());
+        Property propertyToDelete = lastShownPropertyList.get(index.getZeroBased());
 
-        if (personToEdit.getProperties().isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
+        // Remove the property from all persons who own it
+        List<Person> allPersons = model.getFilteredPersonList();
+        for (Person person : allPersons) {
+            if (person.getProperties().contains(propertyToDelete)) {
+                Person editedPerson = person.removeProperty(propertyToDelete);
+                model.setPerson(person, editedPerson);
+            }
         }
 
-        Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(),
-                personToEdit.getEmail(), personToEdit.getTags());
-
-        model.setPerson(personToEdit, editedPerson);
-
-        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(editedPerson)));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, propertyToDelete));
     }
 
     @Override

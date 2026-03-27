@@ -133,7 +133,7 @@ Examples:
 ### Viewing a client's details: `viewProperty`
 
 ![viewProperty](images/viewProperty.png)
-Shows the Property's information and all it's owners by index.
+Shows the Property's information and it's owner by index.
 
 Format: `viewProperty INDEX`
 

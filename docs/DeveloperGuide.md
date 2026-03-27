@@ -160,6 +160,31 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Filter Property feature
+
+#### Implementation
+
+The filter property feature allows users to filter properties by address keywords and automatically display the owners of those properties. This is done by updating the predicates on the `FilteredList` objects.
+
+The `FilterPropertyCommand` is executed through the following flow:
+
+1. The command is executed with a property predicate (`PropertyAddressContainsKeywordsPredicate`) built from the user input.
+2. `FilterPropertyCommand` calls `Model#updateFilteredPropertyList(predicate)`.
+3. `ModelManager#updateFilteredPropertyList(...)` updates the property `FilteredList` by calling `setPredicate(...)`.
+4. `FilterPropertyCommand` then calls `Model#updateFilteredPersonList(ownersOfFilteredProperties)`.
+5. `ModelManager#updateFilteredPersonList(...)` updates the person `FilteredList` by calling `setPredicate(...)`.
+6. The command returns a `CommandResult` after both filtered lists have been updated.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/FilterPropertySequenceDiagram.puml" alt="Interactions between FilterPropertyCommand and ModelManager for filtered list updates" />
+
+#### Design Highlights
+
+* **Predicate-based Filtering**: The `PropertyAddressContainsKeywordsPredicate` implements the `Predicate<Property>` interface, allowing flexible filtering logic.
+* **Keyword Matching**: The predicate supports multiple keywords and performs case-insensitive matching using `StringUtil.containsWordIgnoreCase()`.
+* **Cascading Filter**: After filtering properties, the command automatically updates the person list to show only those who own matching properties, providing a complete view of relevant data.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

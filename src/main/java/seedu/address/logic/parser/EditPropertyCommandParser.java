@@ -5,7 +5,6 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.EditPropertyCommand.MESSAGE_NOT_EDITED;
 import static seedu.address.logic.commands.EditPropertyCommand.MESSAGE_USAGE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_LISTING_INDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
 
@@ -25,20 +24,19 @@ public class EditPropertyCommandParser implements Parser<EditPropertyCommand> {
      *
      * @throws ParseException if the user input does not conform the expected format
      */
+    @Override
     public EditPropertyCommand parse(String args) throws ParseException {
         requireNonNull(args);
 
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_LISTING_INDEX, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE);
+                ArgumentTokenizer.tokenize(args, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE);
 
-        Index clientIndex;
-        Index propertyIndex;
+        Index index;
 
         try {
-            clientIndex = ParserUtil.parseIndex(argMultimap.getPreamble());
-            propertyIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_LISTING_INDEX).get());
-        } catch (Exception e) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE), e);
+            index = ParserUtil.parseIndex(argMultimap.getPreamble());
+        } catch (ParseException pe) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, MESSAGE_USAGE), pe);
         }
 
         EditPropertyDescriptor editPropertyDescriptor = new EditPropertyDescriptor();
@@ -60,6 +58,6 @@ public class EditPropertyCommandParser implements Parser<EditPropertyCommand> {
             throw new ParseException(MESSAGE_NOT_EDITED);
         }
 
-        return new EditPropertyCommand(clientIndex, propertyIndex, editPropertyDescriptor);
+        return new EditPropertyCommand(index, editPropertyDescriptor);
     }
 }

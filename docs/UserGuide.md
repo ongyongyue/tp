@@ -169,15 +169,16 @@ Examples:
 ### Editing a property: `editProperty`
 
 ![editProperty](images/editProperty.png)
-Edits the property identified by the property index for the client identified by the client index.
+Edits the property identified by the index number in the displayed property list.
 Existing values will be overwritten by the input values.
 
-Format: `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`
+Format: `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`
 
 <box type="tip" seamless>
 
 **Tip:**
 
+- Use the `list` command to view the indices of properties before editing a property.
 - At least one of the optional fields must be provided.
 - Only the specified fields will be updated; all other fields will remain unchanged.
 
@@ -185,9 +186,9 @@ Format: `editProperty CLIENT_INDEX i/PROPERTY_INDEX [a/ADDRESS] [pr/PRICE] [s/SI
 
 Examples:
 
-* `editProperty 1 i/1 a/123 Clementi Road pr/500000 s/1200`
-* `editProperty 2 i/1 pr/850000`
-* `editProperty 3 i/2 s/1400`
+* `editProperty 1 a/123 Clementi Road`
+* `editProperty 2 pr/888888`
+* `editProperty 3 a/10 Marina Bay pr/3000000 s/2000`
 
 ### Adding remarks to a property : `remarkProperty`
 

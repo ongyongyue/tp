@@ -3,6 +3,8 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,9 +31,9 @@ public class EditClientCommand extends Command {
             + "by the index number used in the displayed client list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[n/NAME] [c/PHONE] [e/EMAIL]\n"
+            + "[n/NAME] [c/PHONE] [e/EMAIL] [t/TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + "c/91234567 e/johndoe@example.com";
+            + "c/91234567 e/johndoe@example.com t/friend";
 
     public static final String MESSAGE_EDIT_CLIENT_SUCCESS = "Edited Client: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
@@ -85,7 +87,7 @@ public class EditClientCommand extends Command {
         Name updatedName = editClientDescriptor.getName().orElse(personToEdit.getName());
         Phone updatedPhone = editClientDescriptor.getPhone().orElse(personToEdit.getPhone());
         Email updatedEmail = editClientDescriptor.getEmail().orElse(personToEdit.getEmail());
-        Set<Tag> updatedTags = personToEdit.getTags();
+        Set<Tag> updatedTags = editClientDescriptor.getTags().orElse(personToEdit.getTags());
         Set<Property> updatedProperties = personToEdit.getProperties();
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedTags, updatedProperties);
@@ -114,6 +116,7 @@ public class EditClientCommand extends Command {
         private Name name;
         private Phone phone;
         private Email email;
+        private Set<Tag> tags;
 
         public EditClientDescriptor() {}
 
@@ -124,13 +127,14 @@ public class EditClientCommand extends Command {
             setName(toCopy.name);
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
+            setTags(toCopy.tags);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email);
+            return CollectionUtil.isAnyNonNull(name, phone, email, tags);
         }
 
         public void setName(Name name) {
@@ -157,6 +161,14 @@ public class EditClientCommand extends Command {
             return Optional.ofNullable(email);
         }
 
+        public void setTags(Set<Tag> tags) {
+            this.tags = (tags != null) ? new HashSet<>(tags) : null;
+        }
+
+        public Optional<Set<Tag>> getTags() {
+            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
         @Override
         public boolean equals(Object other) {
             if (other == this) {
@@ -170,7 +182,8 @@ public class EditClientCommand extends Command {
             EditClientDescriptor otherDescriptor = (EditClientDescriptor) other;
             return Objects.equals(name, otherDescriptor.name)
                     && Objects.equals(phone, otherDescriptor.phone)
-                    && Objects.equals(email, otherDescriptor.email);
+                    && Objects.equals(email, otherDescriptor.email)
+                    && Objects.equals(tags, otherDescriptor.tags);
         }
     }
 }

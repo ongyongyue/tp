@@ -11,6 +11,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -22,6 +24,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
 public class EditClientCommandTest {
@@ -185,19 +188,23 @@ public class EditClientCommandTest {
     public void equals() {
         EditClientDescriptor descriptor = new EditClientDescriptor();
         descriptor.setName(new Name("Alice"));
+        descriptor.setTags(Set.of(new Tag("friend")));
 
         EditClientDescriptor sameDescriptor = new EditClientDescriptor();
         sameDescriptor.setName(new Name("Alice"));
+        sameDescriptor.setTags(Set.of(new Tag("friend")));
 
         EditClientDescriptor differentDescriptor = new EditClientDescriptor();
-        differentDescriptor.setPhone(new Phone("91234567"));
+        differentDescriptor.setName(new Name("Alice"));
+        differentDescriptor.setTags(Set.of(new Tag("vip")));
 
         EditClientCommand editFirstCommand = new EditClientCommand(INDEX_FIRST_PERSON, descriptor);
-        EditClientCommand editSecondCommand = new EditClientCommand(INDEX_SECOND_PERSON, differentDescriptor);
+        EditClientCommand editSecondCommand = new EditClientCommand(INDEX_FIRST_PERSON, sameDescriptor);
+        EditClientCommand editThirdCommand = new EditClientCommand(INDEX_FIRST_PERSON, differentDescriptor);
 
         assertTrue(editFirstCommand.equals(editFirstCommand));
-        assertTrue(editFirstCommand.equals(new EditClientCommand(INDEX_FIRST_PERSON, sameDescriptor)));
-        assertFalse(editFirstCommand.equals(editSecondCommand));
+        assertTrue(editFirstCommand.equals(editSecondCommand));
+        assertFalse(editFirstCommand.equals(editThirdCommand));
         assertFalse(editFirstCommand.equals(1));
         assertFalse(editFirstCommand.equals(null));
     }

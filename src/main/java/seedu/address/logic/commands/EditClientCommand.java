@@ -33,7 +33,7 @@ public class EditClientCommand extends Command {
             + "Parameters: INDEX (must be a positive integer) "
             + "[n/NAME] [c/PHONE] [e/EMAIL] [t/TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
-            + "c/91234567 e/johndoe@example.com t/friend";
+            + "c/91234567 e/johndoe@example.com t/vip";
 
     public static final String MESSAGE_EDIT_CLIENT_SUCCESS = "Edited Client: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";

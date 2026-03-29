@@ -278,6 +278,20 @@ Examples:
 * `filterProperty s/800 1200` returns properties with sizes between 800 and 1200 sqft.
 * `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500` returns properties in Clementi, priced 1-1.5M, and sized 1000-1500 sqft.
 
+### Filtering properties by type: `filterType`
+
+Filters properties by type (HDB, Condo).
+
+Format: `filterType type/TYPE`
+* The search is case-insensitive. e.g `hdb` will match `HDB`
+* Only full words will be matched e.g. `HD` will not match `HDB
+* Properties matching the specified type will be returned.
+* The client list will show all clients that own any of the matched properties.
+
+Examples:
+* `filterType type/HDB` returns all HDB properties.
+* `filterType type/Condo` returns all Condo properties.
+
 ### Deleting a client : `deleteClient`
 
 ![deleteClient](images/deleteClient.png)

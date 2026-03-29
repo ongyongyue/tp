@@ -182,6 +182,27 @@ The following sequence diagram illustrates the interactions:
 
 <puml src="diagrams/AddPropertySequenceDiagram.puml" alt="AddProperty sequence diagram" />
 
+### Delete Property feature
+
+The delete property feature allows users to delete a property identified by the index in the displayed property list.
+This is done by validating the property deletion and updating the target client in the address book.
+
+The `DeletePropertyCommand` is executed through the following flow:
+1. The command retrieves the currently displayed property list by calling `Model#getFilteredPropertyList()`.
+2. The target property is identified using the provided index.
+3. The command validates whether the property can be deleted from the target client.
+4. If the property deletion is valid, `DeletePropertyCommand` creates an updated `Person` object without the deleted property.
+5. `DeletePropertyCommand` calls `Model#setPerson(personToEdit, editedPerson)`.
+6. `ModelManager#setPerson(...)` updates the target client in the underlying `AddressBook`.
+7. The command returns a `CommandResult` after the target client has been updated.
+
+For simplicity, the sequence diagram below focuses on the main interactions involved in updating the target client and 
+omits lower-level validation details such as index checks, ownership checks, and exception handling.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/DeletePropertySequenceDiagram.puml" alt="Interactions between FilterPropertyCommand and ModelManager for filtered list updates" />
+
 ### Filter Property feature
 
 The filter property feature allows users to filter properties by address keywords, price range, and size range, and automatically display the owners of those properties. This is done by updating the predicates on the `FilteredList` objects.

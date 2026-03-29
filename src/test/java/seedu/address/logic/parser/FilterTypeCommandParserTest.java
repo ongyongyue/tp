@@ -16,11 +16,11 @@ import seedu.address.model.property.PropertyTypeContainsKeywordsPredicate;
  */
 public class FilterTypeCommandParserTest {
 
-    private FilterTypeCommandParser parser = new FilterTypeCommandParser();
+    private final FilterTypeCommandParser parser = new FilterTypeCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(parser, "     ", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+        assertParseFailure(parser, "", String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                 FilterTypeCommand.MESSAGE_USAGE));
     }
 
@@ -31,29 +31,33 @@ public class FilterTypeCommandParserTest {
     }
 
     @Test
-    public void parse_validArgs_returnsFilterTypeCommand() {
-        // no leading and trailing whitespaces
+    public void parse_validSingleKeyword_returnsFilterTypeCommand() {
+        // Single keyword
         FilterTypeCommand expectedFilterTypeCommand =
                 new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList("HDB")));
-        assertParseSuccess(parser, " t/HDB", expectedFilterTypeCommand);
-
-        // multiple whitespaces between keywords
-        assertParseSuccess(parser, " t/ HDB \n \t Condo  \t",
-                new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList("HDB", "Condo"))));
+        assertParseSuccess(parser, " type/HDB", expectedFilterTypeCommand);
     }
 
     @Test
-    public void parse_multipleKeywords_returnsFilterTypeCommand() {
+    public void parse_validMultipleKeywords_returnsFilterTypeCommand() {
+        // Multiple keywords
         FilterTypeCommand expectedFilterTypeCommand =
                 new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList("HDB", "Condo")));
-        assertParseSuccess(parser, " t/HDB Condo", expectedFilterTypeCommand);
+        assertParseSuccess(parser, " type/HDB Condo", expectedFilterTypeCommand);
+    }
+
+    @Test
+    public void parse_multipleWhitespaces_returnsFilterTypeCommand() {
+        // Multiple whitespaces between keywords
+        FilterTypeCommand expectedFilterTypeCommand =
+                new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList("HDB", "Condo")));
+        assertParseSuccess(parser, " type/ HDB \n \t Condo  \t", expectedFilterTypeCommand);
     }
 
     @Test
     public void parse_caseInsensitiveKeywords_returnsFilterTypeCommand() {
         FilterTypeCommand expectedFilterTypeCommand =
                 new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList("hdb", "condo")));
-        assertParseSuccess(parser, " t/hdb condo", expectedFilterTypeCommand);
+        assertParseSuccess(parser, " type/hdb condo", expectedFilterTypeCommand);
     }
 }
-

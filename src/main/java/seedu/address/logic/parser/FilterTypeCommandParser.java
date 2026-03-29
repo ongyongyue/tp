@@ -29,11 +29,22 @@ public class FilterTypeCommandParser implements Parser<FilterTypeCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterTypeCommand.MESSAGE_USAGE));
         }
 
-        String type = argMultimap.getValue(PREFIX_TYPE).orElse("");
+        if (argMultimap.getValue(PREFIX_TYPE).isEmpty()) {
+            throw new ParseException(
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterTypeCommand.MESSAGE_USAGE));
+        }
 
+        String type = argMultimap.getValue(PREFIX_TYPE).get();
         String[] typeKeywords = type.split("\\s+");
 
         return new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(Arrays.asList(typeKeywords)));
     }
 }
+
+
+
+
+
+
+
 

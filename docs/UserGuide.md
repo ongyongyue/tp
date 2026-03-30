@@ -1,7 +1,7 @@
 ---
 layout: default.md
-  title: "User Guide"
-  pageNav: 3
+title: "User Guide"
+pageNav: 3
 ---
 # ClientVault User Guide
 
@@ -62,7 +62,7 @@ Format: `help`
 
 ### Adding a person: `addClient`
 
-![addCLient](images/addClient.png)
+![addClient](images/addClient.png)
 Adds a person to the address book.
 
 Format: `add n/NAME c/CONTACT e/EMAIL [t/TAG]…`

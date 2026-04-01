@@ -262,13 +262,13 @@ Format: `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZ
 * Specify `pr/MIN_PRICE MAX_PRICE` to find properties within a price range.
 * Both boundaries are inclusive.
 * `MIN_PRICE` must be a non-negative integer.
-* It does not matter which value is larger; the command will automatically determine the min and max.
+* `MIN_PRICE` must be smaller than or equal to `MAX_PRICE`.
 
 **Size Range Filtering:**
 * Specify `s/MIN_SIZE MAX_SIZE` to find properties within a size range.
 * Both boundaries are inclusive.
 * `MIN_SIZE` must be a non-negative integer.
-* It does not matter which value is larger; the command will automatically determine the min and max.
+* `MIN_SIZE` must be smaller than or equal to `MAX_SIZE`.
 
 Examples:
 

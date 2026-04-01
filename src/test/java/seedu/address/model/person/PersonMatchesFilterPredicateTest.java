@@ -25,6 +25,8 @@ public class PersonMatchesFilterPredicateTest {
             new PersonMatchesFilterPredicate(firstNameKeywordList, firstTagKeywordList);
         PersonMatchesFilterPredicate secondPredicate =
             new PersonMatchesFilterPredicate(secondNameKeywordList, secondTagKeywordList);
+        PersonMatchesFilterPredicate thirdPredicate =
+            new PersonMatchesFilterPredicate(firstNameKeywordList, secondTagKeywordList);
 
         // same object -> returns true
         assertTrue(firstPredicate.equals(firstPredicate));
@@ -40,8 +42,11 @@ public class PersonMatchesFilterPredicateTest {
         // null -> returns false
         assertFalse(firstPredicate.equals(null));
 
-        // different person -> returns false
+        // different name keywords -> returns false
         assertFalse(firstPredicate.equals(secondPredicate));
+
+        // same name keywords but different tag keywords -> returns false
+        assertFalse(firstPredicate.equals(thirdPredicate));
     }
 
     @Test

@@ -16,6 +16,11 @@ public class ViewPropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "viewProperty";
 
+    public static final String MESSAGE_USAGE = COMMAND_WORD
+            + ": Displays the property and the client who owns it.\n"
+            + "Parameters: INDEX (must be a positive integer)\n"
+            + "Example: " + COMMAND_WORD + " 1";
+
     private final Index index;
 
     /**

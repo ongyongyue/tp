@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.nio.file.DirectoryStream.Filter;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -34,9 +35,13 @@ public class FilterClientCommandTest {
                 new PersonMatchesFilterPredicate(Collections.singletonList("first"), Collections.emptyList());
         PersonMatchesFilterPredicate secondPredicate =
                 new PersonMatchesFilterPredicate(Collections.singletonList("second"), Collections.emptyList());
+        PersonMatchesFilterPredicate thirdPredicate =
+                new PersonMatchesFilterPredicate(Collections.singletonList("first"),
+                        Collections.singletonList("first"));
 
         FilterClientCommand findFirstCommand = new FilterClientCommand(firstPredicate);
         FilterClientCommand findSecondCommand = new FilterClientCommand(secondPredicate);
+        FilterClientCommand findThirdCommand = new FilterClientCommand(thirdPredicate);
 
         // same object -> returns true
         assertTrue(findFirstCommand.equals(findFirstCommand));
@@ -51,8 +56,11 @@ public class FilterClientCommandTest {
         // null -> returns false
         assertFalse(findFirstCommand.equals(null));
 
-        // different person -> returns false
+        // different name keywords -> returns false
         assertFalse(findFirstCommand.equals(findSecondCommand));
+
+        // different tag keywords -> returns false
+        assertFalse(findFirstCommand.equals(findThirdCommand));
     }
 
     @Test

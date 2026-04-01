@@ -10,7 +10,7 @@ import seedu.address.model.Model;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 
 /**
- * Shows only clients whose names contain any of the specified keywords.
+ * Shows only clients whose names or tags contain any of the specified keywords.
  */
 public class FilterClientCommand extends Command {
 

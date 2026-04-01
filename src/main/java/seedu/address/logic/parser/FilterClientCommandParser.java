@@ -20,7 +20,7 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the FilterClientCommand
      * and returns a FilterClientCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * @throws ParseException if the user input does not conform to the expected format
      */
     @Override
     public FilterClientCommand parse(String args) throws ParseException {
@@ -39,7 +39,7 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
 
         List<String> nameKeywords = Collections.emptyList();
         if (argMultimap.getValue(PREFIX_NAME).isPresent()) {
-            String name = argMultimap.getValue(PREFIX_NAME).orElse("").trim();
+            String name = argMultimap.getValue(PREFIX_NAME).get().trim();
             if (name.isEmpty()) {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         FilterClientCommand.MESSAGE_USAGE));
@@ -47,6 +47,7 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
 
             String[] parsedNameKeywords = name.split("\\s+");
             for (String nameKeyword : parsedNameKeywords) {
+                // Use ParserUtil to validate name keywords
                 ParserUtil.parseName(nameKeyword);
             }
             nameKeywords = Arrays.asList(parsedNameKeywords);
@@ -54,7 +55,7 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
 
         List<String> tagKeywords = Collections.emptyList();
         if (argMultimap.getValue(PREFIX_TAG).isPresent()) {
-            String tag = argMultimap.getValue(PREFIX_TAG).orElse("").trim();
+            String tag = argMultimap.getValue(PREFIX_TAG).get().trim();
             if (tag.isEmpty()) {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT,
                         FilterClientCommand.MESSAGE_USAGE));
@@ -62,6 +63,7 @@ public class FilterClientCommandParser implements Parser<FilterClientCommand> {
 
             String[] parsedTagKeywords = tag.split("\\s+");
             for (String tagKeyword : parsedTagKeywords) {
+                // Use ParserUtil to validate tag keywords
                 ParserUtil.parseTag(tagKeyword);
             }
             tagKeywords = Arrays.asList(parsedTagKeywords);

@@ -68,6 +68,7 @@ public class FilterClientCommandParserTest {
                         Collections.emptyList(), Arrays.asList("owesMoney", "friends")));
         assertParseSuccess(parser, " t/owesMoney friends", expectedTagFilterClientCommand);
 
+        // multiple whitespaces between keywords
         assertParseSuccess(parser, " t/owesMoney \n \t friends  \t", expectedTagFilterClientCommand);
 
         // name and tag filtering

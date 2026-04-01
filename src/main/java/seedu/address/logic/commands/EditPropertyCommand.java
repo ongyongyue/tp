@@ -35,7 +35,9 @@ public class EditPropertyCommand extends Command {
     public static final String MESSAGE_EDIT_PROPERTY_SUCCESS = "Edited Property: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PROPERTY =
-            "This client already has another property with the same address.";
+            "Another property with the same address already exists.";
+    public static final String MESSAGE_PROPERTY_OWNER_NOT_FOUND =
+            "Property owner not found.";
     public static final String MESSAGE_NO_PROPERTIES =
             "No properties found. Please add a property first.";
 
@@ -71,6 +73,14 @@ public class EditPropertyCommand extends Command {
         Property propertyToEdit = lastShownPropertyList.get(index.getZeroBased());
         Property editedProperty = createEditedProperty(propertyToEdit, editPropertyDescriptor);
 
+        for (Person person : model.getAddressBook().getPersonList()) {
+            for (Property p : person.getProperties()) {
+                if (!p.equals(propertyToEdit) && p.isSameProperty(editedProperty)) {
+                    throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+                }
+            }
+        }
+
         Person owner = null;
         for (Person person : model.getFilteredPersonList()) {
             if (person.getProperties().contains(propertyToEdit)) {
@@ -79,16 +89,12 @@ public class EditPropertyCommand extends Command {
             }
         }
 
-        // Invariant: each Property is stored under exactly one Person in the model,
-        // hence any property retrieved from the model must have a corresponding owner
-        assert owner != null : "Property must have an owner";
-
-        for (Property p : owner.getProperties()) {
-            if (!p.equals(propertyToEdit) && p.isSameProperty(editedProperty)) {
-                throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
-            }
+        if (owner == null) {
+            throw new CommandException(MESSAGE_PROPERTY_OWNER_NOT_FOUND);
         }
 
+        //@Liu Zhiyuan use chatgpt to help with writing next 8 lines
+        //to ensure the order of property will not be changed.
         Set<Property> updatedProperties = new LinkedHashSet<>();
         for (Property p : owner.getProperties()) {
             if (p.equals(propertyToEdit)) {

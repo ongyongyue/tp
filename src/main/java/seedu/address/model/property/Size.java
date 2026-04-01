@@ -23,7 +23,7 @@ public class Size {
         requireNonNull(size);
         String trimmedSize = size.trim();
         checkArgument(isValidSize(trimmedSize), MESSAGE_CONSTRAINTS);
-        this.value = trimmedSize;
+        this.value = String.valueOf(Integer.parseInt(trimmedSize));
     }
 
     /**

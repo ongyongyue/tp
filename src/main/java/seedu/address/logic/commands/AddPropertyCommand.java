@@ -90,7 +90,7 @@ public class AddPropertyCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
         }
 
-        for (Person person : model.getFilteredPersonList()) {
+        for (Person person : model.getAddressBook().getPersonList()) {
             if (!person.equals(personToEdit) && person.getProperties().contains(property)) {
                 throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
             }

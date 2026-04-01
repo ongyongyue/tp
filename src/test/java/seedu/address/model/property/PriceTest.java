@@ -1,5 +1,6 @@
 package seedu.address.model.property;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -50,5 +51,11 @@ public class PriceTest {
         assertFalse(firstPrice.equals(null));
 
         assertFalse(firstPrice.equals(secondPrice));
+    }
+
+    @Test
+    public void constructor_leadingZeros_removed() {
+        Price price = new Price("009");
+        assertEquals("9", price.toString());
     }
 }

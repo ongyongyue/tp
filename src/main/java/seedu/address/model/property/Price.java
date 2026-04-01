@@ -23,7 +23,7 @@ public class Price {
         requireNonNull(price);
         String trimmedPrice = price.trim();
         checkArgument(isValidPrice(trimmedPrice), MESSAGE_CONSTRAINTS);
-        this.value = trimmedPrice;
+        this.value = String.valueOf(Integer.parseInt(trimmedPrice));
     }
 
     /**

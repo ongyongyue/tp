@@ -10,9 +10,9 @@ public class PropertyAddress {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Property address should not be blank, should be at most 100 characters long, "
-                    + "and should only contain letters, numbers, spaces, and , . # - /";
+                    + "and should only contain letters, numbers, spaces, and , . # -";
 
-    public static final String VALIDATION_REGEX = "[A-Za-z0-9 ,.#\\-/]+";
+    public static final String VALIDATION_REGEX = "[A-Za-z0-9 ,.#\\-]+";
 
     public final String value;
 

@@ -174,4 +174,32 @@ public class AddPropertyCommandParserTest {
         assertParseFailure(parser, userInput,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
     }
+
+    @Test
+    public void parse_repeatedAddress_failure() {
+        assertParseFailure(parser,
+                " i/1 a/311 Clementi Ave 2 a/222 Bedok North pr/1200000 s/1200",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_repeatedPrice_failure() {
+        assertParseFailure(parser,
+                " i/1 a/311 Clementi Ave 2 pr/1200000 pr/1300000 s/1200",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_repeatedSize_failure() {
+        assertParseFailure(parser,
+                " i/1 a/311 Clementi Ave 2 pr/1200000 s/1200 s/1300",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_repeatedType_failure() {
+        assertParseFailure(parser,
+                " i/1 a/311 Clementi Ave 2 pr/1200000 s/1200 type/HDB type/Condo",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+    }
 }

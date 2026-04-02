@@ -214,25 +214,36 @@ Examples:
 * `remarkProperty 1 i/1 r/Needs renovation before move-in` adds said remark to the 1st property of the 1st client
 * `remarkProperty 2 i/1 r/Near Chinese Garden MRT`
 
-### Filtering clients by name: `filterClient`
+### Filtering clients by name and/or tag: `filterClient`
 
 ![filterClient](images/filterClient.png)
-Finds clients whose names contain any of the given keywords.
+Finds clients whose names and/or tags match the given keywords.
 
-Format: `filterClient n/KEYWORD [MORE_KEYWORDS]`
+Format: `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`
 
-* The search is case-insensitive. e.g `hans` will match `Hans`
-* The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
-* Only the name is searched.
-* Only full words will be matched e.g. `Han` will not match `Hans`
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
-  e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
-* The property list will show all properties that are owned by any of the matched clients.
+<box type="tip" seamless>
+
+**Tip:**
+
+- At least one filter criterion (name keywords or tag keywords) must be provided.
+- Multiple filter criteria can be combined in a single command.
+- The filtered clients will match at least one keyword in each filter criterion.
+- The property list will show all properties that are owned by any of the matched clients.
+
+</box>
+
+* Name matching is case-insensitive. e.g `hans` will match `Hans`
+* Tag matching is case-insensitive. e.g `owesmoney` will match `owesMoney`
+* For both name and tag filters, the order of keywords does not matter.
+* Name keywords must be valid names and match full words only. e.g. `Han` will not match `Hans`
+* For each prefix, clients matching at least one keyword are returned (i.e. `OR` within `n/`, `OR` within `t/`).
+  e.g. `n/Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
 
 * `filterClient n/John` returns `john` and `John Doe`
-* `filterClient n/alex david` returns `Alex Yeoh`, `David Li`<br>
+* `filterClient t/owesMoney` returns clients tagged `owesMoney`
+* `filterClient n/alex david t/friends` returns clients whose name matches `alex` or `david`, and who are tagged `friends`<br>
 
 ### Filtering properties: `filterProperty`
 
@@ -384,7 +395,7 @@ Action              | Format, Examples
 **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`
 **Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL] [t/TAG]...`<br> e.g., `editClient 2 n/Alex Yeoh`
 **Edit Property**   | `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE]`<br> e.g., `editProperty 1 a/123 Clementi Road pr/500000 s/1200`
-**Filter Client**   | `filterClient n/KEYWORD [MORE_KEYWORDS]`<br> e.g., `filterClient n/James Jake`
+**Filter Client**   | `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`<br> e.g., `filterClient n/James Jake t/friends`
 **Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500`
 **List**            | `list`
 **Help**            | `help`

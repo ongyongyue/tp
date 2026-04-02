@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalPersons.CARL;
 import static seedu.address.testutil.TypicalPersons.ELLE;
 import static seedu.address.testutil.TypicalPersons.FIONA;
@@ -18,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.PersonMatchesFilterPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FilterClientCommand}.
@@ -29,13 +30,17 @@ public class FilterClientCommandTest {
 
     @Test
     public void equals() {
-        NameContainsKeywordsPredicate firstPredicate =
-                new NameContainsKeywordsPredicate(Collections.singletonList("first"));
-        NameContainsKeywordsPredicate secondPredicate =
-                new NameContainsKeywordsPredicate(Collections.singletonList("second"));
+        PersonMatchesFilterPredicate firstPredicate =
+                new PersonMatchesFilterPredicate(Collections.singletonList("first"), Collections.emptyList());
+        PersonMatchesFilterPredicate secondPredicate =
+                new PersonMatchesFilterPredicate(Collections.singletonList("second"), Collections.emptyList());
+        PersonMatchesFilterPredicate thirdPredicate =
+                new PersonMatchesFilterPredicate(Collections.singletonList("first"),
+                        Collections.singletonList("first"));
 
         FilterClientCommand findFirstCommand = new FilterClientCommand(firstPredicate);
         FilterClientCommand findSecondCommand = new FilterClientCommand(secondPredicate);
+        FilterClientCommand findThirdCommand = new FilterClientCommand(thirdPredicate);
 
         // same object -> returns true
         assertTrue(findFirstCommand.equals(findFirstCommand));
@@ -50,14 +55,17 @@ public class FilterClientCommandTest {
         // null -> returns false
         assertFalse(findFirstCommand.equals(null));
 
-        // different person -> returns false
+        // different name keywords -> returns false
         assertFalse(findFirstCommand.equals(findSecondCommand));
+
+        // different tag keywords -> returns false
+        assertFalse(findFirstCommand.equals(findThirdCommand));
     }
 
     @Test
-    public void execute_zeroKeywords_noPersonFound() {
+    public void execute_nonMatchingKeyword_noPersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
-        NameContainsKeywordsPredicate predicate = preparePredicate(" ");
+        PersonMatchesFilterPredicate predicate = preparePredicate("zzz");
         FilterClientCommand command = new FilterClientCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -67,7 +75,7 @@ public class FilterClientCommandTest {
     @Test
     public void execute_multipleKeywords_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
-        NameContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
+        PersonMatchesFilterPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FilterClientCommand command = new FilterClientCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
@@ -75,17 +83,29 @@ public class FilterClientCommandTest {
     }
 
     @Test
+    public void execute_tagKeyword_singlePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        PersonMatchesFilterPredicate predicate = new PersonMatchesFilterPredicate(
+                Collections.emptyList(), Collections.singletonList("owesMoney"));
+        FilterClientCommand command = new FilterClientCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Collections.singletonList(BENSON), model.getFilteredPersonList());
+    }
+
+    @Test
     public void toStringMethod() {
-        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(Arrays.asList("keyword"));
+        PersonMatchesFilterPredicate predicate =
+                new PersonMatchesFilterPredicate(Arrays.asList("keyword"), Collections.emptyList());
         FilterClientCommand filterClientCommand = new FilterClientCommand(predicate);
         String expected = FilterClientCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
         assertEquals(expected, filterClientCommand.toString());
     }
 
     /**
-     * Parses {@code userInput} into a {@code NameContainsKeywordsPredicate}.
+     * Parses {@code userInput} into a {@code PersonMatchesFilterPredicate}.
      */
-    private NameContainsKeywordsPredicate preparePredicate(String userInput) {
-        return new NameContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));
+    private PersonMatchesFilterPredicate preparePredicate(String userInput) {
+        return new PersonMatchesFilterPredicate(Arrays.asList(userInput.split("\\s+")), Collections.emptyList());
     }
 }

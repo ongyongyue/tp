@@ -1,6 +1,9 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_PRICE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_SIZE;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,8 +32,13 @@ public class EditPropertyCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the property identified "
             + "by the index number used in the displayed property list.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[a/ADDRESS] [pr/PRICE] [s/SIZE]\n"
-            + "Example: " + COMMAND_WORD + " 1 a/123 Clementi Road pr/500000 s/1200";
+            + "[" + PREFIX_ADDRESS + "ADDRESS] "
+            + "[" + PREFIX_PRICE + "PRICE] "
+            + "[" + PREFIX_SIZE + "SIZE]\n"
+            + "Example: " + COMMAND_WORD + " 1 "
+            + PREFIX_ADDRESS + "123 Clementi Road "
+            + PREFIX_PRICE + "500000 "
+            + PREFIX_SIZE + "1200";
 
     public static final String MESSAGE_EDIT_PROPERTY_SUCCESS = "Edited Property: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";

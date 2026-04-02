@@ -20,6 +20,8 @@ public class Messages {
                 "Duplicate prefixes specified for the following unique field(s): ";
     public static final String MESSAGE_INVALID_NO_PROPERTY = "Listed Person has no property";
     public static final String MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX = "Invalid Property Index!";
+    public static final String MESSAGE_INVALID_TYPE =
+            "Only one type is allowed. Use 'HDB' or 'Condo' (case-insensitive).";
 
     /**
      * Returns an error message indicating the duplicate prefixes.

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.CollectionUtil;
@@ -35,7 +36,8 @@ public class EditClientCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1 "
             + "c/91234567 e/johndoe@example.com t/vip";
 
-    public static final String MESSAGE_EDIT_CLIENT_SUCCESS = "Edited Client: %1$s";
+    public static final String MESSAGE_EDIT_CLIENT_SUCCESS =
+            "Edited Client: %1$s; Phone: %2$s; Email: %3$s; Tags: %4$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
     public static final String MESSAGE_DUPLICATE_PERSON = "This client already exists in the address book.";
 
@@ -74,7 +76,13 @@ public class EditClientCommand extends Command {
 
         model.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
         model.updateFilteredPropertyList(p -> editedPerson.getProperties().contains(p));
-        return new CommandResult(String.format(MESSAGE_EDIT_CLIENT_SUCCESS, editedPerson));
+        return new CommandResult(String.format(
+                MESSAGE_EDIT_CLIENT_SUCCESS,
+                editedPerson.getName(),
+                editedPerson.getPhone(),
+                editedPerson.getEmail(),
+                formatTags(editedPerson.getTags())
+        ));
     }
 
     /**
@@ -106,6 +114,17 @@ public class EditClientCommand extends Command {
         EditClientCommand otherEditClientCommand = (EditClientCommand) other;
         return index.equals(otherEditClientCommand.index)
                 && editClientDescriptor.equals(otherEditClientCommand.editClientDescriptor);
+    }
+
+    /**
+     * Formats a set of tags into [tag][tag] style for display.
+     */
+    private static String formatTags(Set<Tag> tags) {
+        return tags.stream()
+                .map(tag -> tag.tagName)
+                .sorted()
+                .map(tag -> "[" + tag + "]")
+                .collect(Collectors.joining());
     }
 
     /**

@@ -22,6 +22,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 
 /**
@@ -56,16 +57,17 @@ public class DeleteClientCommandTest {
 
     @Test
     public void execute_unfilteredListHasProperties_success() throws CommandException {
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
-                new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
+        Property propertyToAdd = new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"));
+        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON, propertyToAdd);
         addPropertyCommand.execute(model);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteClientCommand deleteCommand = new DeleteClientCommand(INDEX_FIRST_PERSON);
 
         String expectedMessage = String.format(DeleteClientCommand.MESSAGE_DELETE_CLIENT_SUCCESS,
-                Messages.format(personToDelete));
+                Messages.format(personToDelete))
+                + "\nDeleted Properties:\n- " + propertyToAdd;
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
@@ -107,16 +109,23 @@ public class DeleteClientCommandTest {
     public void execute_filteredListHasProperties_success() throws CommandException {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
-        AddPropertyCommand addPropertyCommand = new AddPropertyCommand(INDEX_FIRST_PERSON,
-                new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"), new Price("1200000"),
-                new Size("1200")));
-        addPropertyCommand.execute(model);
+        Property property1ToAdd = new Property(new PropertyAddress("311 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"), new PropertyType("HDB"));
+        Property property2ToAdd = new Property(new PropertyAddress("400 Clementi Ave 2, #02-25"),
+                new Price("1200000"), new Size("1200"), new PropertyType("Condo"));
+
+        AddPropertyCommand addProperty1Command = new AddPropertyCommand(INDEX_FIRST_PERSON, property1ToAdd);
+        addProperty1Command.execute(model);
+
+        AddPropertyCommand addProperty2Command = new AddPropertyCommand(INDEX_FIRST_PERSON, property2ToAdd);
+        addProperty2Command.execute(model);
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteClientCommand deleteCommand = new DeleteClientCommand(INDEX_FIRST_PERSON);
 
         String expectedMessage = String.format(DeleteClientCommand.MESSAGE_DELETE_CLIENT_SUCCESS,
-                Messages.format(personToDelete));
+                Messages.format(personToDelete))
+                + "\nDeleted Properties:\n- " + property1ToAdd + "\n- " + property2ToAdd;
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);

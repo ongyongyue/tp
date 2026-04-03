@@ -28,6 +28,9 @@ import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.PersonBuilder;
 
+/**
+ * Contains integration tests (interaction with the Model) for {@code EditClientCommand}.
+ */
 public class EditClientCommandTest {
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 

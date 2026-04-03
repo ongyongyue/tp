@@ -24,6 +24,9 @@ import seedu.address.model.property.Property;
 import seedu.address.model.property.PropertyAddress;
 import seedu.address.model.property.Size;
 
+/**
+ * Contains integration tests (interaction with the Model) for {@code AddPropertyCommand}.
+ */
 public class AddPropertyCommandTest {
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 

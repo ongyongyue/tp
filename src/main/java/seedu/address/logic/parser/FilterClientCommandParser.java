@@ -13,7 +13,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.PersonMatchesFilterPredicate;
 
 /**
- * Parses input arguments and creates a new FilterClientCommand object
+ * Parses input arguments and creates a new FilterClientCommand object.
  */
 public class FilterClientCommandParser implements Parser<FilterClientCommand> {
 

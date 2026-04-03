@@ -9,6 +9,7 @@ import seedu.address.logic.parser.exceptions.ParseException;
  * Parses input arguments and creates a new DeletePropertyCommand object.
  */
 public class DeletePropertyCommandParser implements Parser<DeletePropertyCommand> {
+
     /**
      * Parses the given {@code String} of arguments and returns a DeletePropertyCommand object.
      */

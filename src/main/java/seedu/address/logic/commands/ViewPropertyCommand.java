@@ -16,8 +16,7 @@ public class ViewPropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "viewProperty";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Displays the property and the client who owns it.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Displays the property and the client who owns it.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
@@ -40,7 +39,7 @@ public class ViewPropertyCommand extends Command {
 
         Property propertyToView = lastShownPropertyList.get(index.getZeroBased());
 
-        // Find the person who owns this property (with single ownership, there's only one)
+        // Find the person who owns this property
         Person ownerOfProperty = null;
         for (Person person : model.getFilteredPersonList()) {
             if (person.getProperties().contains(propertyToView)) {
@@ -60,9 +59,8 @@ public class ViewPropertyCommand extends Command {
             model.updateFilteredPersonList(person -> false);
         }
 
-        return new CommandResult(
-                String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW,
-                        ownerOfProperty != null ? 1 : 0));
+        return new CommandResult(String.format(
+                Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, ownerOfProperty != null ? 1 : 0));
     }
 
     @Override

@@ -21,7 +21,6 @@ public class EditPropertyCommandParser implements Parser<EditPropertyCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the EditPropertyCommand
      * and returns an EditPropertyCommand object for execution.
-     *
      * @throws ParseException if the user input does not conform the expected format
      */
     @Override

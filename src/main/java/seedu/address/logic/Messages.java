@@ -17,7 +17,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "Duplicate prefixes specified for the following unique field(s): ";
+            "Duplicate prefixes specified for the following unique field(s): ";
     public static final String MESSAGE_INVALID_NO_PROPERTY = "Listed Person has no property";
     public static final String MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX = "Invalid Property Index!";
     public static final String MESSAGE_INVALID_TYPE =

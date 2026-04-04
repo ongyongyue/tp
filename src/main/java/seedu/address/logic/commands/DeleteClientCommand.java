@@ -19,7 +19,7 @@ public class DeleteClientCommand extends Command {
     public static final String COMMAND_WORD = "deleteClient";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the client identified by the index number used in the displayed client list.\n"
+            + ": Deletes the client identified by the index number used in the displayed client list. "
             + "All properties of the client will also be deleted.\n"
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
@@ -43,19 +43,49 @@ public class DeleteClientCommand extends Command {
 
         Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
 
-        // Assume that the format will include property information if it exists
-        // Otherwise, call Messages.format on editedPerson instead of personToDelete
+        // Format the person information for the success message
         String formattedPersonToDelete = Messages.format(personToDelete);
 
+        // Collect information about deleted properties
+        StringBuilder deletedPropertiesInfo = new StringBuilder();
+
+        // Delete all properties associated with this client
         if (!personToDelete.getProperties().isEmpty()) {
-            DeletePropertyCommand deletePropertyCommand = new DeletePropertyCommand(targetIndex);
-            deletePropertyCommand.execute(model);
+            // Filter property list to show only properties belonging to this client
+            model.updateFilteredPropertyList(
+                    p -> personToDelete.getProperties().contains(p));
+
+            // Get all properties in the filtered list (all belonging to this client)
+            List<seedu.address.model.property.Property> propertiesToDelete =
+                    model.getFilteredPropertyList();
+
+            // Collect property details before deletion
+            deletedPropertiesInfo.append("\nDeleted Properties:");
+            for (seedu.address.model.property.Property property : propertiesToDelete) {
+                deletedPropertiesInfo.append("\n- ").append(property);
+            }
+
+            // Delete each property starting from the last to avoid index shifting issues
+            for (int i = propertiesToDelete.size() - 1; i >= 0; i--) {
+                DeletePropertyCommand deletePropertyCommand =
+                        new DeletePropertyCommand(Index.fromZeroBased(i));
+                deletePropertyCommand.execute(model);
+            }
         }
 
-        Person editedPerson = lastShownList.get(targetIndex.getZeroBased());
+        // After deleting properties, get the updated person reference (properties may have been removed)
+        Person personToDeleteUpdated = lastShownList.get(targetIndex.getZeroBased());
 
-        model.deletePerson(editedPerson);
-        return new CommandResult(String.format(MESSAGE_DELETE_CLIENT_SUCCESS, formattedPersonToDelete));
+        // Delete the client
+        model.deletePerson(personToDeleteUpdated);
+
+        // After deleting the client, update property filter to match remaining displayed clients
+        List<Person> remainingClients = model.getFilteredPersonList();
+        model.updateFilteredPropertyList(
+                p -> remainingClients.stream().anyMatch(person -> person.getProperties().contains(p)));
+
+        return new CommandResult(String.format(MESSAGE_DELETE_CLIENT_SUCCESS, formattedPersonToDelete)
+                + deletedPropertiesInfo);
     }
 
     @Override
@@ -65,11 +95,10 @@ public class DeleteClientCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof DeleteClientCommand)) {
+        if (!(other instanceof DeleteClientCommand otherDeleteCommand)) {
             return false;
         }
 
-        DeleteClientCommand otherDeleteCommand = (DeleteClientCommand) other;
         return targetIndex.equals(otherDeleteCommand.targetIndex);
     }
 

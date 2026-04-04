@@ -41,6 +41,18 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
         }
 
+        if (argMultimap.getAllValues(PREFIX_LISTING_INDEX).size() != 1
+                || argMultimap.getAllValues(PREFIX_ADDRESS).size() != 1
+                || argMultimap.getAllValues(PREFIX_PRICE).size() != 1
+                || argMultimap.getAllValues(PREFIX_SIZE).size() != 1) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+        }
+
+        if (argMultimap.getAllValues(PREFIX_TYPE).size() > 1) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
+        }
+
         try {
             Index targetIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_LISTING_INDEX).get());
             PropertyAddress address = new PropertyAddress(argMultimap.getValue(PREFIX_ADDRESS).get());

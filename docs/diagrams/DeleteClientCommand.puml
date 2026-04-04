@@ -1,0 +1,56 @@
+@startuml
+skinparam ArrowFontStyle plain
+
+!include style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":DeleteClientCommand" as DeleteClientCommand LOGIC_COLOR
+participant ":DeletePropertyCommand" as DeletePropertyCommand LOGIC_COLOR
+end box
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "personToDelete:Person" as Person MODEL_COLOR
+end box
+
+[-> DeleteClientCommand : execute(model)
+activate DeleteClientCommand
+
+DeleteClientCommand -> ModelManager : getFilteredPersonList()
+activate ModelManager
+ModelManager --> DeleteClientCommand : lastShownList
+deactivate ModelManager
+
+DeleteClientCommand -> DeleteClientCommand : validate index
+note right : throws CommandException\nif index out of bounds
+
+DeleteClientCommand -> Person : getProperties()
+activate Person
+Person --> DeleteClientCommand : properties
+deactivate Person
+
+alt properties not empty
+    create DeletePropertyCommand
+    DeleteClientCommand -> DeletePropertyCommand
+    activate DeletePropertyCommand
+    DeletePropertyCommand -> ModelManager : (executes property deletion)
+    activate ModelManager
+    ModelManager --> DeletePropertyCommand
+    deactivate ModelManager
+    DeletePropertyCommand --> DeleteClientCommand
+    deactivate DeletePropertyCommand
+    destroy DeletePropertyCommand
+end
+
+DeleteClientCommand -> ModelManager : getFilteredPersonList()
+activate ModelManager
+ModelManager --> DeleteClientCommand : editedPerson
+deactivate ModelManager
+
+DeleteClientCommand -> ModelManager : deletePerson(editedPerson)
+activate ModelManager
+ModelManager --> DeleteClientCommand
+deactivate ModelManager
+
+[<-- DeleteClientCommand : new CommandResult(MESSAGE_DELETE_CLIENT_SUCCESS)
+deactivate DeleteClientCommand
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":AddPropertyCommand" as AddPropertyCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "personToEdit:Person" as Person MODEL_COLOR
+participant ":AddressBook" as AddressBook MODEL_COLOR
+end box
+
+[-> AddPropertyCommand : execute(model)
+activate AddPropertyCommand
+
+AddPropertyCommand -> ModelManager : getFilteredPersonList()
+activate ModelManager
+ModelManager --> AddPropertyCommand : lastShownList
+deactivate ModelManager
+
+AddPropertyCommand -> Person : validate property addition
+activate Person
+Person --> AddPropertyCommand : editedPerson
+deactivate Person
+
+AddPropertyCommand -> ModelManager : setPerson(personToEdit, editedPerson)
+activate ModelManager
+ModelManager -> AddressBook : setPerson(...)
+activate AddressBook
+AddressBook --> ModelManager
+deactivate AddressBook
+ModelManager --> AddPropertyCommand
+deactivate ModelManager
+
+[<-- AddPropertyCommand : new CommandResult(...)
+deactivate AddPropertyCommand
+@enduml

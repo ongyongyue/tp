@@ -15,6 +15,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.property.Price;
 import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.property.Size;
 import seedu.address.model.tag.Tag;
 
@@ -169,5 +170,23 @@ public class ParserUtil {
             throw new ParseException(Size.MESSAGE_CONSTRAINTS);
         }
         return new Size(trimmedSize);
+    }
+
+    /**
+     * Parses a {@code String} into a {@code PropertyType}.
+     *
+     * @param type The string representing the property type.
+     * @return The {@code PropertyType} object.
+     * @throws ParseException if the given {@code type} is invalid.
+     */
+    public static PropertyType parsePropertyType(String type) throws ParseException {
+        requireNonNull(type);
+        String trimmedType = type.trim();
+
+        if (!PropertyType.isValidPropertyType(trimmedType)) {
+            throw new ParseException(PropertyType.MESSAGE_CONSTRAINTS);
+        }
+
+        return new PropertyType(trimmedType);
     }
 }

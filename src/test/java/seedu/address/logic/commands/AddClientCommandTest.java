@@ -26,6 +26,9 @@ import seedu.address.model.person.Person;
 import seedu.address.model.property.Property;
 import seedu.address.testutil.PersonBuilder;
 
+/**
+ * Contains integration tests (interaction with the Model) for {@code AddClientCommand}.
+ */
 public class AddClientCommandTest {
 
     @Test
@@ -167,6 +170,11 @@ public class AddClientCommandTest {
 
         @Override
         public void updateFilteredPropertyList(Predicate<Property> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void sortPropertyList(java.util.Comparator<Property> comparator) {
             throw new AssertionError("This method should not be called.");
         }
     }

@@ -18,12 +18,19 @@ import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteClientCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FilterClientCommand;
+import seedu.address.logic.commands.FilterPropertyCommand;
+import seedu.address.logic.commands.FilterTypeCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.RemarkPropertyCommand;
+import seedu.address.logic.commands.SortPropertyCommand;
+import seedu.address.logic.commands.ViewClientCommand;
+import seedu.address.logic.commands.ViewPropertyCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.PersonMatchesFilterPredicate;
+import seedu.address.model.property.PropertyMatchesFilterPredicate;
+import seedu.address.model.property.PropertyTypeContainsKeywordsPredicate;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
@@ -60,9 +67,43 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_filterClient() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
-        FilterClientCommand command = (FilterClientCommand) parser.parseCommand(
-                FilterClientCommand.COMMAND_WORD + " n/" + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FilterClientCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        FilterClientCommand nameCommand = (FilterClientCommand) parser.parseCommand(
+                FilterClientCommand.COMMAND_WORD + " n/"
+                + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterClientCommand(new PersonMatchesFilterPredicate(keywords, List.of())), nameCommand);
+
+        List<String> tagKeywords = Arrays.asList("owesMoney", "friends");
+        FilterClientCommand tagCommand = (FilterClientCommand) parser.parseCommand(
+                FilterClientCommand.COMMAND_WORD + " t/"
+                + tagKeywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterClientCommand(new PersonMatchesFilterPredicate(List.of(), tagKeywords)), tagCommand);
+
+        FilterClientCommand nameAndTagCommand = (FilterClientCommand) parser.parseCommand(
+                FilterClientCommand.COMMAND_WORD + " n/"
+                + keywords.stream().collect(Collectors.joining(" "))
+                + " t/" + tagKeywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterClientCommand(new PersonMatchesFilterPredicate(
+                keywords, tagKeywords)), nameAndTagCommand);
+
+    }
+
+    @Test
+    public void parseCommand_filterProperty() throws Exception {
+        List<String> keywords = Arrays.asList("clementi", "punggol");
+        FilterPropertyCommand command = (FilterPropertyCommand) parser.parseCommand(
+                FilterPropertyCommand.COMMAND_WORD + " a/"
+                + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterPropertyCommand(new PropertyMatchesFilterPredicate(
+            keywords, 0, Long.MAX_VALUE, 0, Long.MAX_VALUE)), command);
+    }
+
+    @Test
+    public void parseCommand_filterType() throws Exception {
+        List<String> keywords = Arrays.asList("HDB");
+        FilterTypeCommand command = (FilterTypeCommand) parser.parseCommand(
+                FilterTypeCommand.COMMAND_WORD + " type/"
+                + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FilterTypeCommand(new PropertyTypeContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test
@@ -70,6 +111,27 @@ public class AddressBookParserTest {
         RemarkPropertyCommand command = (RemarkPropertyCommand) parser.parseCommand(
                 RemarkPropertyCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " r/Near MRT");
         assertEquals(new RemarkPropertyCommand(INDEX_FIRST_PERSON, "Near MRT"), command);
+    }
+
+    @Test
+    public void parseCommand_sortProperty() throws Exception {
+        SortPropertyCommand command = (SortPropertyCommand) parser.parseCommand(
+                SortPropertyCommand.COMMAND_WORD + " st/price o/up");
+        assertEquals(new SortPropertyCommand("price", "up"), command);
+    }
+
+    @Test
+    public void parseCommand_viewClient() throws Exception {
+        ViewClientCommand command = (ViewClientCommand) parser.parseCommand(
+                ViewClientCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new ViewClientCommand(INDEX_FIRST_PERSON), command);
+    }
+
+    @Test
+    public void parseCommand_viewProperty() throws Exception {
+        ViewPropertyCommand command = (ViewPropertyCommand) parser.parseCommand(
+                ViewPropertyCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+        assertEquals(new ViewPropertyCommand(INDEX_FIRST_PERSON), command);
     }
 
     @Test

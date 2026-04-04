@@ -1,0 +1,39 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":DeletePropertyCommand" as DeletePropertyCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "personToEdit:Person" as Person MODEL_COLOR
+participant ":AddressBook" as AddressBook MODEL_COLOR
+end box
+
+[-> DeletePropertyCommand : execute(model)
+activate DeletePropertyCommand
+
+DeletePropertyCommand -> ModelManager : getFilteredPersonList()
+activate ModelManager
+ModelManager --> DeletePropertyCommand : lastShownList
+deactivate ModelManager
+
+DeletePropertyCommand -> Person : validate property deletion
+activate Person
+Person --> DeletePropertyCommand : editedPerson
+deactivate Person
+
+DeletePropertyCommand -> ModelManager : setPerson(personToEdit, editedPerson)
+activate ModelManager
+ModelManager -> AddressBook : setPerson(...)
+activate AddressBook
+AddressBook --> ModelManager
+deactivate AddressBook
+ModelManager --> DeletePropertyCommand
+deactivate ModelManager
+
+[<-- DeletePropertyCommand : new CommandResult(...)
+deactivate DeletePropertyCommand
+@enduml

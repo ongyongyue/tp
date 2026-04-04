@@ -4,8 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
@@ -29,6 +30,7 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredPersons;
     private final ObservableList<Property> properties;
     private final FilteredList<Property> filteredProperties;
+    private final SortedList<Property> sortedFilteredProperties;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -43,6 +45,7 @@ public class ModelManager implements Model {
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         properties = FXCollections.observableArrayList();
         filteredProperties = new FilteredList<>(properties);
+        sortedFilteredProperties = new SortedList<>(filteredProperties);
         refreshProperties();
         this.addressBook.getPersonList().addListener((ListChangeListener<Person>) change -> refreshProperties());
     }
@@ -135,7 +138,7 @@ public class ModelManager implements Model {
 
     @Override
     public ObservableList<Property> getFilteredPropertyList() {
-        return filteredProperties;
+        return sortedFilteredProperties;
     }
 
     @Override
@@ -150,11 +153,16 @@ public class ModelManager implements Model {
         filteredProperties.setPredicate(predicate);
     }
 
+    @Override
+    public void sortPropertyList(Comparator<Property> comparator) {
+        sortedFilteredProperties.setComparator(comparator);
+    }
+
     /**
      * Rebuilds the flattened property list from all persons in the address book.
      */
     private void refreshProperties() {
-        List<Property> aggregatedProperties = new ArrayList<>();
+        LinkedHashSet<Property> aggregatedProperties = new LinkedHashSet<>();
         for (Person person : addressBook.getPersonList()) {
             aggregatedProperties.addAll(person.getProperties());
         }
@@ -176,7 +184,7 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
             && filteredPersons.equals(otherModelManager.filteredPersons)
-            && filteredProperties.equals(otherModelManager.filteredProperties);
+            && sortedFilteredProperties.equals(otherModelManager.sortedFilteredProperties);
     }
 
 }

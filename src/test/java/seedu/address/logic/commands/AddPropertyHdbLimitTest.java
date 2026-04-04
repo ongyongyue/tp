@@ -78,7 +78,8 @@ public class AddPropertyHdbLimitTest {
         addCommand1.execute(model);
 
         // Add HDB property to second person - this should succeed
-        AddPropertyCommand addCommand2 = new AddPropertyCommand(Index.fromOneBased(2), hdbProperty2);
+        AddPropertyCommand addCommand2 = new AddPropertyCommand(
+                Index.fromOneBased(2), hdbProperty2);
         CommandResult result = addCommand2.execute(model);
 
         assertTrue(result.getFeedbackToUser().contains("New property added"));

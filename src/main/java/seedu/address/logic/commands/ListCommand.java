@@ -21,6 +21,7 @@ public class ListCommand extends Command {
         requireNonNull(model);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         model.updateFilteredPropertyList(PREDICATE_SHOW_ALL_PROPERTIES);
+        model.sortPropertyList(null);
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }

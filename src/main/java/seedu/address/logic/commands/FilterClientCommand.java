@@ -1,27 +1,30 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.PersonMatchesFilterPredicate;
 
 /**
- * Shows only clients whose names contain any of the specified keywords.
+ * Shows only clients whose names or tags contain any of the specified keywords.
  */
 public class FilterClientCommand extends Command {
 
     public static final String COMMAND_WORD = "filterClient";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all persons whose names contain any of "
-            + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
-            + "Parameters: n/NAME\n"
-            + "Example: " + COMMAND_WORD + " n/John";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists all persons whose names and/or tags match"
+            + " the given case-insensitive keywords.\n"
+            + "Parameters: [" + PREFIX_NAME + "NAME] [" + PREFIX_TAG + "TAG]\n"
+            + "At least one prefix must be provided.\n"
+            + "Examples: " + COMMAND_WORD + " " + PREFIX_NAME + "John " + PREFIX_TAG + "owesMoney";
 
-    private final NameContainsKeywordsPredicate predicate;
+    private final PersonMatchesFilterPredicate predicate;
 
-    public FilterClientCommand(NameContainsKeywordsPredicate predicate) {
+    public FilterClientCommand(PersonMatchesFilterPredicate predicate) {
         this.predicate = predicate;
     }
 
@@ -46,8 +49,8 @@ public class FilterClientCommand extends Command {
             return false;
         }
 
-        FilterClientCommand otherViewClientCommand = (FilterClientCommand) other;
-        return predicate.equals(otherViewClientCommand.predicate);
+        FilterClientCommand otherFilterClientCommand = (FilterClientCommand) other;
+        return predicate.equals(otherFilterClientCommand.predicate);
     }
 
     @Override

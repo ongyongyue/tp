@@ -30,7 +30,7 @@ public class PropertyAddressTest {
         assertTrue(PropertyAddress.isValidPropertyAddress("123 Main Street"));
         assertTrue(PropertyAddress.isValidPropertyAddress("Blk 123 #12-34"));
         assertTrue(PropertyAddress.isValidPropertyAddress("123 Main St., Singapore"));
-        assertTrue(PropertyAddress.isValidPropertyAddress("45/67 Orchard Road"));
+        assertTrue(PropertyAddress.isValidPropertyAddress("45 Orchard Road"));
     }
 
     @Test

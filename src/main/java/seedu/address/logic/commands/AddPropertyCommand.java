@@ -23,8 +23,8 @@ public class AddPropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "addProperty";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a property to the person identified "
-            + "by the index number used in the displayed person list. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a property to the client identified "
+            + "by the index number used in the displayed person list. \n"
             + "Parameters: "
             + PREFIX_LISTING_INDEX + "CLIENT_INDEX "
             + PREFIX_ADDRESS + "ADDRESS "
@@ -43,6 +43,8 @@ public class AddPropertyCommand extends Command {
     public static final String MESSAGE_DUPLICATE_HDB_PROPERTY = "This person already has an HDB property. "
             + "Each person can only have a maximum of 1 HDB property.";
     public static final String MESSAGE_NO_PERSONS = "No clients found. Please add a client first.";
+    public static final String MESSAGE_INVALID_PERSON_INDEX = "The person index provided is invalid.";
+    public static final String MESSAGE_PROPERTY_ALREADY_OWNED = "This property is already owned by another client.";
 
     private final Index targetIndex;
     private final Property property;
@@ -52,7 +54,7 @@ public class AddPropertyCommand extends Command {
      * to the person at the specified {@code Index}.
      *
      * @param targetIndex The index of the person to add the property to.
-     * @param property The property to add.
+     * @param property    The property to add.
      */
     public AddPropertyCommand(Index targetIndex, Property property) {
         requireNonNull(targetIndex);
@@ -79,7 +81,7 @@ public class AddPropertyCommand extends Command {
         }
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException("The person index provided is invalid.");
+            throw new CommandException(MESSAGE_INVALID_PERSON_INDEX);
         }
 
         Person personToEdit = lastShownList.get(targetIndex.getZeroBased());
@@ -87,6 +89,12 @@ public class AddPropertyCommand extends Command {
         if (personToEdit.getProperties().stream()
                 .anyMatch(p -> p.isSameProperty(property))) {
             throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
+        }
+
+        for (Person person : model.getAddressBook().getPersonList()) {
+            if (!person.equals(personToEdit) && person.getProperties().contains(property)) {
+                throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
+            }
         }
 
         // Check if trying to add an HDB property when person already has one
@@ -112,9 +120,11 @@ public class AddPropertyCommand extends Command {
         if (other == this) {
             return true;
         }
+
         if (!(other instanceof AddPropertyCommand)) {
             return false;
         }
+
         AddPropertyCommand otherAddPropertyCommand = (AddPropertyCommand) other;
         return targetIndex.equals(otherAddPropertyCommand.targetIndex)
                 && property.equals(otherAddPropertyCommand.property);

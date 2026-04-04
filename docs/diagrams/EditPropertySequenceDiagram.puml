@@ -1,0 +1,39 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":EditPropertyCommand" as EditPropertyCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "owner:Person" as Person MODEL_COLOR
+participant ":AddressBook" as AddressBook MODEL_COLOR
+end box
+
+[-> EditPropertyCommand : execute(model)
+activate EditPropertyCommand
+
+EditPropertyCommand -> ModelManager : getFilteredPropertyList()
+activate ModelManager
+ModelManager --> EditPropertyCommand : lastShownPropertyList
+deactivate ModelManager
+
+EditPropertyCommand -> Person : update property in owner
+activate Person
+Person --> EditPropertyCommand : editedPerson
+deactivate Person
+
+EditPropertyCommand -> ModelManager : setPerson(owner, editedPerson)
+activate ModelManager
+ModelManager -> AddressBook : setPerson(...)
+activate AddressBook
+AddressBook --> ModelManager
+deactivate AddressBook
+ModelManager --> EditPropertyCommand
+deactivate ModelManager
+
+[<-- EditPropertyCommand : new CommandResult(...)
+deactivate EditPropertyCommand
+@enduml

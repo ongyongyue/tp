@@ -19,7 +19,7 @@ public class AddClientCommand extends Command {
 
     public static final String COMMAND_WORD = "addClient";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a Client to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a Client to the address book. \n"
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
@@ -29,8 +29,7 @@ public class AddClientCommand extends Command {
             + PREFIX_NAME + "John Doe "
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
-            + PREFIX_TAG + "friends "
-            + PREFIX_TAG + "owesMoney";
+            + PREFIX_TAG + "vip";
 
     public static final String MESSAGE_SUCCESS = "New client added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This client already exists in the address book";

@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.ViewPropertyCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -14,7 +16,12 @@ public class ViewPropertyCommandParser implements Parser<ViewPropertyCommand> {
      */
     @Override
     public ViewPropertyCommand parse(String args) throws ParseException {
-        Index index = ParserUtil.parseIndex(args);
-        return new ViewPropertyCommand(index);
+        try {
+            Index index = ParserUtil.parseIndex(args);
+            return new ViewPropertyCommand(index);
+        } catch (ParseException pe) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, ViewPropertyCommand.MESSAGE_USAGE), pe);
+        }
     }
 }

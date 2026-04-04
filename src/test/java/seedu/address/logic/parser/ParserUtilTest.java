@@ -18,6 +18,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.property.PropertyType;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -192,5 +193,21 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parsePropertyType_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parsePropertyType(null));
+    }
+
+    @Test
+    public void parsePropertyType_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parsePropertyType("aaa"));
+    }
+
+    @Test
+    public void parsePropertyType_validValueWithoutWhitespace_returnsPropertyType() throws Exception {
+        PropertyType expected = new PropertyType("HDB");
+        assertEquals(expected, ParserUtil.parsePropertyType("HDB"));
     }
 }

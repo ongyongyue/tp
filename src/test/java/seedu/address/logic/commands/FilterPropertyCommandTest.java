@@ -19,7 +19,12 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.property.*;
+import seedu.address.model.property.Price;
+import seedu.address.model.property.Property;
+import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyMatchesFilterPredicate;
+import seedu.address.model.property.PropertyType;
+import seedu.address.model.property.Size;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FilterPropertyCommand}.

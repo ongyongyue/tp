@@ -19,7 +19,11 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
-import seedu.address.model.property.*;
+import seedu.address.model.property.Price;
+import seedu.address.model.property.Property;
+import seedu.address.model.property.PropertyAddress;
+import seedu.address.model.property.PropertyType;
+import seedu.address.model.property.Size;
 import seedu.address.testutil.PersonBuilder;
 
 /**

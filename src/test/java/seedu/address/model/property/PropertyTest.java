@@ -11,77 +11,77 @@ import org.junit.jupiter.api.Test;
 
 public class PropertyTest {
 
-    private final PropertyAddress VALID_ADDRESS = new PropertyAddress("123 Main Street");
-    private final Price VALID_PRICE = new Price("500000");
-    private final Size VALID_SIZE = new Size("1200");
-    private final PropertyType VALID_TYPE = new PropertyType("HDB");
+    private final PropertyAddress validAddress = new PropertyAddress("123 Main Street");
+    private final Price validPrice = new Price("500000");
+    private final Size validSize = new Size("1200");
+    private final PropertyType validType = new PropertyType("HDB");
 
     @Test
     public void constructor_nullAddress_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Property(null, VALID_PRICE, VALID_SIZE, VALID_TYPE));
+        assertThrows(NullPointerException.class, () -> new Property(null, validPrice, validSize, validType));
     }
 
     @Test
     public void constructor_nullPrice_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Property(VALID_ADDRESS, null, VALID_SIZE, VALID_TYPE));
+        assertThrows(NullPointerException.class, () -> new Property(validAddress, null, validSize, validType));
     }
 
     @Test
     public void constructor_nullSize_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Property(VALID_ADDRESS, VALID_PRICE, null, VALID_TYPE));
+        assertThrows(NullPointerException.class, () -> new Property(validAddress, validPrice, null, validType));
     }
 
     @Test
     public void constructor_nullType_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, null));
+        assertThrows(NullPointerException.class, () -> new Property(validAddress, validPrice, validSize, null));
     }
 
     @Test
     public void isSameProperty() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, VALID_TYPE);
+        Property property = new Property(validAddress, validPrice, validSize, validType);
 
         assertTrue(property.isSameProperty(property));
 
         assertFalse(property.isSameProperty(null));
 
         Property sameAddressDifferentDetails =
-                new Property(VALID_ADDRESS, new Price("600000"), new Size("1500"), new PropertyType("HDB"));
+                new Property(validAddress, new Price("600000"), new Size("1500"), new PropertyType("HDB"));
         assertTrue(property.isSameProperty(sameAddressDifferentDetails));
 
         Property differentAddress =
-                new Property(new PropertyAddress("456 Orchard Road"), VALID_PRICE, VALID_SIZE, VALID_TYPE);
+                new Property(new PropertyAddress("456 Orchard Road"), validPrice, validSize, validType);
         assertFalse(property.isSameProperty(differentAddress));
     }
     @Test
     public void toString_withPropertyType_includesType() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
         assertTrue(property.toString().contains("Type: HDB"));
     }
 
     @Test
     public void isSameProperty_differentPropertyType_returnsFalse() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
-        Property differentType = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("Condo"));
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property differentType = new Property(validAddress, validPrice, validSize, new PropertyType("Condo"));
         assertFalse(property.isSameProperty(differentType));
     }
 
     @Test
     public void equals_samePropertyType_returnsTrue() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
-        Property sameType = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property sameType = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
         assertTrue(property.equals(sameType));
     }
 
     @Test
     public void equals_oneNullPropertyType_returnsFalse() {
-        Property withType = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
-        Property withoutType = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, VALID_TYPE);
+        Property withType = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
+        Property withoutType = new Property(validAddress, validPrice, validSize, validType);
         assertFalse(withType.equals(withoutType));
     }
 
     @Test
     public void withRemarks_preservesAllFields() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, new PropertyType("HDB"));
+        Property property = new Property(validAddress, validPrice, validSize, new PropertyType("HDB"));
         Property withRemarks = property.withRemarks("Near MRT");
 
         assertEquals("Near MRT", withRemarks.getRemarks());
@@ -93,7 +93,7 @@ public class PropertyTest {
 
     @Test
     public void setAndGetRemarks() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, VALID_TYPE);
+        Property property = new Property(validAddress, validPrice, validSize, validType);
         assertNull(property.getRemarks());
         property.setRemarks("Near MRT");
         assertEquals("Near MRT", property.getRemarks());
@@ -101,10 +101,10 @@ public class PropertyTest {
 
     @Test
     public void equals() {
-        Property property = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, VALID_TYPE);
-        Property propertyCopy = new Property(VALID_ADDRESS, VALID_PRICE, VALID_SIZE, VALID_TYPE);
+        Property property = new Property(validAddress, validPrice, validSize, validType);
+        Property propertyCopy = new Property(validAddress, validPrice, validSize, validType);
         Property differentProperty =
-                new Property(new PropertyAddress("456 Orchard Road"), VALID_PRICE, VALID_SIZE, VALID_TYPE);
+                new Property(new PropertyAddress("456 Orchard Road"), validPrice, validSize, validType);
 
         assertTrue(property.equals(property));
 

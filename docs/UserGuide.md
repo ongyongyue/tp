@@ -84,7 +84,7 @@ Examples:
 ![addProperty](images/addProperty.png)
 Adds a property to the client identified by the index number in the displayed client list.
 
-Format: `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE [type/TYPE]`
+Format: `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE`
 
 <box type="tip" seamless>
 
@@ -92,7 +92,7 @@ Format: `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE [type/TYPE]`
 
 - Use the `list` command to view the indices of clients before adding a property.
 - Each property can only belong to one client.
-- The `type/TYPE` field is optional.
+- The `type/TYPE` field is case insensitive, ie: hdb or HDB accepted.
 
 </box>
 
@@ -107,7 +107,7 @@ Format: `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE [type/TYPE]`
 Examples:
 
 * `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
-* `addProperty i/2 a/10 Orchard Road pr/2500000 s/1800`
+* `addProperty i/2 a/97 Panji Panji Road pr/2500000 s/1800 type/Condo`
 
 ### Listing all clients and their properties : `list`
 
@@ -389,7 +389,7 @@ _Details coming soon ..._
 Action              | Format, Examples
 --------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **Add Client**      | `addClient n/NAME c/CONTACT e/EMAIL [t/TAG]…​` <br> e.g., `add n/James Ho c/22224444 e/jamesho@example.com t/friend t/colleague`
-**Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE [type/TYPE]` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
+**Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
 **Clear**           | `clear`
 **Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`
 **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`

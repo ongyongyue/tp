@@ -11,7 +11,7 @@ public class PropertyType {
     public static final String MESSAGE_CONSTRAINTS =
             "Property type should be either HDB or Condo, and it should not be blank.";
 
-    public static final String VALIDATION_REGEX = "(?i)^(HDB|condo)$";
+    public static final String VALIDATION_REGEX = "(?i)^(HDB|Condo)$";
 
     public final String value;
 
@@ -28,7 +28,7 @@ public class PropertyType {
         this.value = normalizePropertyType(propertyType);
     }
     /**
-    * Sets the tag to either Condo or Property, non-case sensitive
+    * * Normalizes the input to its canonical form: "HDB" or "Condo", case-insensitively.
     *
     * @param input A valid property type string.
     */

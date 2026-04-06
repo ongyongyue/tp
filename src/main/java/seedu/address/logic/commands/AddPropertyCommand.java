@@ -30,7 +30,7 @@ public class AddPropertyCommand extends Command {
             + PREFIX_ADDRESS + "ADDRESS "
             + PREFIX_PRICE + "PRICE "
             + PREFIX_SIZE + "SIZE "
-            + "[" + PREFIX_TYPE + "TYPE]\n"
+            + PREFIX_TYPE + "TYPE\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_LISTING_INDEX + "1 "
             + PREFIX_ADDRESS + "311 Clementi Ave 2, #02-25 "
@@ -98,8 +98,7 @@ public class AddPropertyCommand extends Command {
         }
 
         // Check if trying to add an HDB property when person already has one
-        if (property.getPropertyType() != null
-                && property.getPropertyType().toString().equalsIgnoreCase("HDB")
+        if (property.getPropertyType().toString().equalsIgnoreCase("HDB")
                 && personToEdit.hasHdbProperty()) {
             throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
         }

@@ -17,28 +17,18 @@ public class Property {
     private String remarks;
 
     /**
-     * Constructs a {@code Property} without a property type.
-     *
-     * @param address A valid property address.
-     * @param price A valid property price.
-     * @param size A valid property size.
-     */
-    public Property(PropertyAddress address, Price price, Size size) {
-        this(address, price, size, null);
-    }
-
-    /**
      * Constructs a {@code Property} with a property type.
      *
      * @param address A valid property address.
      * @param price A valid property price.
      * @param size A valid property size.
-     * @param propertyType The type of the property (e.g. HDB, Condo). May be null.
+     * @param propertyType The type of the property (e.g. HDB, Condo).
      */
     public Property(PropertyAddress address, Price price, Size size, PropertyType propertyType) {
         requireNonNull(address);
         requireNonNull(price);
         requireNonNull(size);
+        requireNonNull(propertyType);
         this.address = address;
         this.price = price;
         this.size = size;
@@ -117,7 +107,7 @@ public class Property {
     @Override
     public String toString() {
         return "Address: " + address + ", Price: " + price + ", Size: " + size
-                + (propertyType != null ? ", Type: " + propertyType : "");
+                + ", Type: " + propertyType;
     }
 
     @Override

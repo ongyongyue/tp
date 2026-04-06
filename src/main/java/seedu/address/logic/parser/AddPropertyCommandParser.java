@@ -35,7 +35,8 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(
                 args, PREFIX_LISTING_INDEX, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE, PREFIX_TYPE);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_LISTING_INDEX, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE)
+        if (!arePrefixesPresent(argMultimap, PREFIX_LISTING_INDEX, PREFIX_ADDRESS, PREFIX_PRICE, PREFIX_SIZE,
+                PREFIX_TYPE)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
@@ -44,11 +45,12 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
         if (argMultimap.getAllValues(PREFIX_LISTING_INDEX).size() != 1
                 || argMultimap.getAllValues(PREFIX_ADDRESS).size() != 1
                 || argMultimap.getAllValues(PREFIX_PRICE).size() != 1
-                || argMultimap.getAllValues(PREFIX_SIZE).size() != 1) {
+                || argMultimap.getAllValues(PREFIX_SIZE).size() != 1
+                || argMultimap.getAllValues(PREFIX_TYPE).size() != 1) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
         }
 
-        if (argMultimap.getAllValues(PREFIX_TYPE).size() > 1) {
+        if (argMultimap.getAllValues(PREFIX_TYPE).size() != 1) {
             throw new ParseException(String.format(
                     MESSAGE_INVALID_COMMAND_FORMAT, AddPropertyCommand.MESSAGE_USAGE));
         }
@@ -59,10 +61,7 @@ public class AddPropertyCommandParser implements Parser<AddPropertyCommand> {
             Price price = new Price(argMultimap.getValue(PREFIX_PRICE).get());
             Size size = new Size(argMultimap.getValue(PREFIX_SIZE).get());
 
-            PropertyType propertyType = null;
-            if (argMultimap.getValue(PREFIX_TYPE).isPresent()) {
-                propertyType = new PropertyType(argMultimap.getValue(PREFIX_TYPE).get());
-            }
+            PropertyType propertyType = new PropertyType(argMultimap.getValue(PREFIX_TYPE).get());;
 
             Property property = new Property(address, price, size, propertyType);
             return new AddPropertyCommand(targetIndex, property);

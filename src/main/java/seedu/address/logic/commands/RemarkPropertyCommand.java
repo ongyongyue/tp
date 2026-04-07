@@ -2,9 +2,9 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
@@ -46,37 +46,54 @@ public class RemarkPropertyCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        List<Person> filteredPersonList = model.getFilteredPersonList();
-        if (filteredPersonList.isEmpty()) {
+        List<Property> filteredPropertyList = model.getFilteredPropertyList();
+
+        if (filteredPropertyList.isEmpty()) {
             throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
         }
 
-        Person currentPerson = filteredPersonList.get(0);
-        List<Property> properties = new ArrayList<>(currentPerson.getProperties());
-
-        if (properties.isEmpty()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_NO_PROPERTY);
-        }
-
-        if (propertyIndex.getZeroBased() >= properties.size()) {
+        if (propertyIndex.getZeroBased() >= filteredPropertyList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
         }
 
-        // Create updated property with new remark
-        Property updatedProperty = properties.get(propertyIndex.getZeroBased()).withRemarks(remark);
-        properties.set(propertyIndex.getZeroBased(), updatedProperty);
+        // Get the target property from the flat global property list
+        Property targetProperty = filteredPropertyList.get(propertyIndex.getZeroBased());
+        Property updatedProperty = targetProperty.withRemarks(remark);
 
-        // Rebuild person with updated property set
+        // Reverse-look up the owner
+        Person owner = null;
+        for (Person person : model.getAddressBook().getPersonList()) {
+            if (person.getProperties().contains(targetProperty)) {
+                owner = person;
+                break;
+            }
+        }
+
+        if (owner == null) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PROPERTY_DISPLAYED_INDEX);
+        }
+
+        // Rebuild the owner's property set preserving order
+        Set<Property> updatedProperties = new LinkedHashSet<>();
+        for (Property p : owner.getProperties()) {
+            if (p.equals(targetProperty)) {
+                updatedProperties.add(updatedProperty);
+            } else {
+                updatedProperties.add(p);
+            }
+        }
+
         Person updatedPerson = new Person(
-                currentPerson.getName(),
-                currentPerson.getPhone(),
-                currentPerson.getEmail(),
-                currentPerson.getTags(),
-                new HashSet<>(properties)
+                owner.getName(),
+                owner.getPhone(),
+                owner.getEmail(),
+                owner.getTags(),
+                updatedProperties
         );
 
-        model.setPerson(currentPerson, updatedPerson);
-        // Keep the filtered view on this person
+        model.setPerson(owner, updatedPerson);
+        model.updateFilteredPersonList(p -> p.isSamePerson(updatedPerson));
+        model.updateFilteredPropertyList(p -> p.equals(updatedProperty));
         model.updateFilteredPersonList(p -> p.isSamePerson(updatedPerson));
 
         return new CommandResult(String.format(MESSAGE_SUCCESS, updatedProperty));

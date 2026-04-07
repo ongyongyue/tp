@@ -200,7 +200,7 @@ Examples:
 Adds a remark to the property at the specified INDEX.
 Existing remarks will be overwritten by the new remark.
 
-Format: `remarkProperty INDEX i/PROPERTY_INDEX r/REMARK`
+Format: `remarkProperty PROPERTY_INDEX r/REMARK`
 
 * The index **must be a positive integer** 1, 2, 3, …
 * Remarks cannot be changed by editProperty
@@ -211,8 +211,8 @@ Format: `remarkProperty INDEX i/PROPERTY_INDEX r/REMARK`
 
 Examples:
 
-* `remarkProperty 1 i/1 r/Needs renovation before move-in` adds said remark to the 1st property of the 1st client
-* `remarkProperty 2 i/1 r/Near Chinese Garden MRT`
+* `remarkProperty 1 r/Needs renovation before move-in` adds said remark to the 1st property
+* `remarkProperty 2 r/Near Chinese Garden MRT` adds said remark to the 2nd property
 
 ### Filtering clients by name and/or tag: `filterClient`
 
@@ -399,4 +399,4 @@ Action              | Format, Examples
 **Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500`
 **List**            | `list`
 **Help**            | `help`
-**Remark Property** | `remarkProperty CLIENT_INDEX i/PROPERTY_INDEX r/REMARKS` <br> e.g., `remarkProperty 2 i/1 r/Near Chinese Garden MRT`
+**Remark Property** | `remarkProperty PROPERTY_INDEX  r/REMARKS` <br> e.g., `remarkProperty 2 r/Near Chinese Garden MRT`

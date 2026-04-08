@@ -30,6 +30,7 @@ import seedu.address.model.tag.Tag;
  * Edits the details of an existing client in the address book.
  */
 public class EditClientCommand extends Command {
+
     public static final String COMMAND_WORD = "editClient";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the client identified "
@@ -47,15 +48,19 @@ public class EditClientCommand extends Command {
 
     public static final String MESSAGE_EDIT_CLIENT_SUCCESS =
             "Edited Client: %1$s; Phone: %2$s; Email: %3$s; Tags: %4$s";
-    public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This client already exists in the address book.";
+    public static final String MESSAGE_NOT_EDITED =
+            "At least one field to edit must be provided.";
+    public static final String MESSAGE_DUPLICATE_PERSON =
+            "This client already exists in the address book.";
 
     private final Index index;
     private final EditClientDescriptor editClientDescriptor;
 
     /**
-     * @param index of the person in the filtered person list to edit
-     * @param editClientDescriptor details to edit the person with
+     * Creates an EditClientCommand to edit the specified {@code Person}.
+     *
+     * @param index The index of the client to edit.
+     * @param editClientDescriptor The descriptor containing the new values.
      */
     public EditClientCommand(Index index, EditClientDescriptor editClientDescriptor) {
         requireNonNull(index);
@@ -65,16 +70,20 @@ public class EditClientCommand extends Command {
         this.editClientDescriptor = new EditClientDescriptor(editClientDescriptor);
     }
 
+    /**
+     * Executes the command and edits the specified client.
+     *
+     * @param model The model to execute the command on.
+     * @return The result of the command execution.
+     * @throws CommandException If the index is invalid or results in duplicate client.
+     */
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+
         List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-        }
-
-        Person personToEdit = lastShownList.get(index.getZeroBased());
+        Person personToEdit = getTargetPerson(lastShownList);
         Person editedPerson = createEditedPerson(personToEdit, editClientDescriptor);
 
         if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
@@ -85,6 +94,7 @@ public class EditClientCommand extends Command {
 
         model.updateFilteredPersonList(p -> p.isSamePerson(editedPerson));
         model.updateFilteredPropertyList(p -> editedPerson.getProperties().contains(p));
+
         return new CommandResult(String.format(
                 MESSAGE_EDIT_CLIENT_SUCCESS,
                 editedPerson.getName(),
@@ -95,10 +105,28 @@ public class EditClientCommand extends Command {
     }
 
     /**
-     * Creates and returns a {@code Person} with the details of {@code personToEdit}
-     * edited with {@code editClientDescriptor}.
+     * Returns the target client identified by the index.
+     *
+     * @param lastShownList The list of clients currently displayed.
+     * @return The target client.
+     * @throws CommandException If the index is invalid.
      */
-    private static Person createEditedPerson(Person personToEdit, EditClientDescriptor editClientDescriptor) {
+    private Person getTargetPerson(List<Person> lastShownList) throws CommandException {
+        if (index.getZeroBased() >= lastShownList.size()) {
+            throw new CommandException(MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        }
+        return lastShownList.get(index.getZeroBased());
+    }
+
+    /**
+     * Creates and returns a {@code Person} with updated details.
+     *
+     * @param personToEdit         The original person.
+     * @param editClientDescriptor The descriptor containing updated values.
+     * @return The edited person.
+     */
+    private static Person createEditedPerson(Person personToEdit,
+                                             EditClientDescriptor editClientDescriptor) {
         assert personToEdit != null;
 
         Name updatedName = editClientDescriptor.getName().orElse(personToEdit.getName());
@@ -110,6 +138,26 @@ public class EditClientCommand extends Command {
         return new Person(updatedName, updatedPhone, updatedEmail, updatedTags, updatedProperties);
     }
 
+    /**
+     * Formats a set of tags into [tag][tag] format.
+     *
+     * @param tags The set of tags to format.
+     * @return A formatted string representation of tags.
+     */
+    private static String formatTags(Set<Tag> tags) {
+        return tags.stream()
+                .map(tag -> tag.tagName)
+                .sorted()
+                .map(tag -> "[" + tag + "]")
+                .collect(Collectors.joining());
+    }
+
+    /**
+     * Returns true if both commands have the same index and descriptor.
+     *
+     * @param other The object to compare against.
+     * @return True if equal, false otherwise.
+     */
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -126,19 +174,7 @@ public class EditClientCommand extends Command {
     }
 
     /**
-     * Formats a set of tags into [tag][tag] style for display.
-     */
-    private static String formatTags(Set<Tag> tags) {
-        return tags.stream()
-                .map(tag -> tag.tagName)
-                .sorted()
-                .map(tag -> "[" + tag + "]")
-                .collect(Collectors.joining());
-    }
-
-    /**
-     * Stores the details to edit the person with. Each non-empty field value will replace the
-     * corresponding field value of the person.
+     * Stores the details to edit the person with.
      */
     public static class EditClientDescriptor {
         private Name name;
@@ -146,10 +182,13 @@ public class EditClientCommand extends Command {
         private Email email;
         private Set<Tag> tags;
 
-        public EditClientDescriptor() {}
+        public EditClientDescriptor() {
+        }
 
         /**
          * Copy constructor.
+         *
+         * @param toCopy The descriptor to copy from.
          */
         public EditClientDescriptor(EditClientDescriptor toCopy) {
             setName(toCopy.name);
@@ -158,9 +197,6 @@ public class EditClientCommand extends Command {
             setTags(toCopy.tags);
         }
 
-        /**
-         * Returns true if at least one field is edited.
-         */
         public boolean isAnyFieldEdited() {
             return CollectionUtil.isAnyNonNull(name, phone, email, tags);
         }
@@ -194,7 +230,9 @@ public class EditClientCommand extends Command {
         }
 
         public Optional<Set<Tag>> getTags() {
-            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+            return (tags != null)
+                    ? Optional.of(Collections.unmodifiableSet(tags))
+                    : Optional.empty();
         }
 
         @Override

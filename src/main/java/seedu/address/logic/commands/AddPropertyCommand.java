@@ -86,7 +86,8 @@ public class AddPropertyCommand extends Command {
 
         Person personToEdit = lastShownList.get(targetIndex.getZeroBased());
 
-        if (personToEdit.hasProperty(property)) {
+        if (personToEdit.getProperties().stream()
+                .anyMatch(p -> p.isSameProperty(property))) {
             throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
         }
 

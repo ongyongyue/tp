@@ -610,8 +610,45 @@ Goal: Edit a client's details to keep information updated and accurate
     * 4b1. System shows error message that the edited client details would result in a duplicate client entry
 
       Use case ends
-  
 
+<box type="note" seamless>
+
+**Note:**
+
+- Edit Property works the same way, with the following differences:
+  - In step 2, the actor uses the property index and the fields to update (address, price, size, tags) instead of client index and client fields
+  - In extension 4b, the system will additionally check that the client will not have 2 HDB type properties after the edit on top of checking for duplicate property entry
+    </box>
+
+**Use Case 7: Filter Client**
+
+Goal: Filter clients by name to quickly find specific clients
+
+**MSS:**
+1. Actor enters filter criteria (name or tag)
+2. Actor uses the filterClient feature with the keywords
+3. System filters the client list to show only clients whose names match the keywords
+4. System displays the filtered list of clients
+
+   Use case ends
+
+**Extensions:**
+* 2a. No keywords provided
+    * 2a1. System shows error message requesting keywords
+      Step 2a1 repeats until Actor provides keywords.
+      Use case resumes from step 3
+
+* 3a. No clients match the keywords
+    * 3a1. System shows message that no clients match the criteria
+      Use case ends
+
+<box type="note" seamless>
+
+**Note:**
+
+- Filter Property works the same way, with the following differences:
+    - In step 1, the actor can filter by property address, price range, or size range instead of client name and tag fields
+      </box>
   
 ### Non-Functional Requirements
 

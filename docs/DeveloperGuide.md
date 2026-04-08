@@ -434,83 +434,185 @@ Note: For all use cases, the System is `ClientVault` and the Actor is the `Prope
 
 **Use Case 1: Adding a new client**
 
-Actor: Residential Property Agent(John)
-
-Goal: Add a new client with his/her property details after first meeting
+Goal: Add a new client's details after first meeting
 
 **MSS:**
 
-1. John launches application
-2. John adds new client with his/her relevant details
-3. John reads the system confirmation that the new client has been added
-4. John adds a new property listing under said client
-5. John reads the system confirmation that the new listing has been added under said client
+1. Actor launches application
+2. Actor adds new client with his/her relevant details
+3. System adds the new client to the address book
+4. Actor reads the system confirmation that the new client has been added
 
    Use case ends
 
 **Extensions:**
 
-* 2a. Application detects error in John’s entry format
-	* 2a1. Application requests for new entry with correct format
-	* 2a2. John enters data in correct format
+* 2a. System detects error in Actor’s entry format or missing required fields
+	* 2a1. System requests for new entry with correct format
+	* 2a2. Actor enters data in correct format 
+      
+      Steps 2a1-2a2 repeats until Actor uses the proper format 
 
-	   Steps 2a1-2a2 repeats until John uses the proper format.
+      Use case resumes from step 3
 
-	   Use case resumes from step 4
+* 2b. System detects duplicate client entry
+    * 2b1. System shows an error message that the client already exists in the address book
+    * 2b2. Actor enters data with different name
+      
+      Steps 2b1-2b2 repeats until Actor uses a different name
+  
+      Use case resumes from step 3
 
-**Use Case 2: View Property Information of a Client**
+**Use Case 2: Adding a new property**
 
-Actor: Property Agent
+Goal: Add a new property's details 
+
+**MSS:**
+
+1. Actor launches application
+2. Actor adds new property with relevant details
+3. System adds the new property to the address book
+4. Actor reads the system confirmation that the new property has been added
+
+   Use case ends
+
+**Extensions:**
+
+* 2a. System detects error in Actor’s entry format or missing required fields
+    * 2a1. System requests for new entry with correct format
+    * 2a2. Actor enters data in correct format
+
+      Steps 2a1-2a2 repeats until Actor uses the proper format
+
+      Use case resumes from step 3
+
+* 2b. System detects duplicate property entry
+    * 2b1. System shows an error message that the client already exists in the address book
+
+      Use case ends
+  
+* 2c. System detects client already has a 'HDB' type property
+    * 2c1. System shows an error message that the client already has a 'HDB' type property
+
+      Use case ends
+
+**Use Case 3: View Property Information of a Client**
 
 Goal:  See all properties listed under a specific client
 
 **MSS:**
 
-1. Agent identifies client name
-2. Agent uses the viewProperty feature with the client’s name as the parameter
-3. System retrieves all properties linked to client
-4. Displays the list of properties linked to client(indexed)
-5. User chooses the specific property by index
-6. System displays all relevant information about the specific property
+1. Actor identifies client index in the displayed client list
+2. Actor uses the viewClient feature with the client’s index as the parameter
+3. System retrieves client at that index
+4. System retrieves all properties linked to that client 
+5. System displays the list of properties linked to client(indexed)
+6. Actor chooses the specific property by index
+7. System displays all relevant information about the specific property
 
    Use Case ends
 
 **Extensions:**
 
-* 2a. Client does not exist
-	* 2a1. Client does not exist message displayed to user
+* 2a. Client index is invalid (e.g., out of bounds, not a number)
+	* 2a1. System shows error message that client index is invalid
 
-		Use case ends
+      Step 2a1 repeats until Actor uses a valid client index
+       
+      Use case resumes from Step 3
 
-* 3a. Client exists but no property listed under client
-	* 3a1. No property listed under client message displayed to user
+* 4a. Client exists but no property listed under client
+	* 4a1. System shows message that no property is listed under client
+    
+      Use case ends
 
-		Use case ends
+**Use Case 4:  Delete property listing**
 
-**Use Case 3:  Delete property listing after successful transaction**
-
-Actor: Property agent
-
-Goal: Delete a listing
+Goal: Delete a listing after a successful transaction to reduce clutter in the address book
 
 **MSS:**
-1. Agent confirms a property has been sold
-2. Agent identifies client name and index
-3. Agent uses the deleteProperty feature with client name, index, address, price and size
+1. Actor confirms a property has been sold
+2. Actor identifies property index
+3. Agent uses the deleteProperty feature with property index
 4. System verifies property exists
 5. System confirmation that said property is deleted
 
    Use case ends
 
 **Extension:**
-* 4a. One of the inputs does not match an existing property
-  * 4a1. System informs user that specified property does not exist
-  * 4a2. Prompts user to try deleting again and give a delete format to follow
-  * 4a3. Steps 4a1 to 4a2 repeats as long as user doesn’t input the valid
-      details of an existing property
+* 3a. Property index is invalid (e.g., out of bounds, not a number)
+  * 3a1. System shows error message that property index is invalid
+  
+    Step 3a1 repeats until Actor uses a valid property index
 
-    Use case ends
+    Use case resumes from Step 4
 
+**Use Case 5: Delete Client**
+
+Goal: Delete a client and all their associated properties to reduce clutter
+
+**MSS:**
+
+1. Actor identifies client index in the displayed client list
+2. Actor uses the deleteClient feature with the client's index
+3. System verifies client exists
+4. System deletes all properties associated with the client
+5. System deletes the client
+6. System shows confirmation that the client and their properties have been deleted
+
+   Use case ends
+
+**Extension:**
+* 2a. Client index is invalid (e.g., out of bounds, not a number)
+    * 2a1. System shows error message that client index is invalid
+
+      Step 2a1 repeats until Actor uses a valid client index
+
+      Use case resumes from Step 3
+
+**Use Case 6: Edit Client**
+
+Goal: Edit a client's details to keep information updated and accurate
+
+**MSS:**
+
+1. Actor identifies client index in the displayed client list
+2. Actor uses the editClient feature with the client's index and the fields to update (name, phone, email, address, role, tags)
+3. System verifies client exists at the given index
+4. System validates the provided field formats
+5. System updates the client with the new details
+6. System shows confirmation that the client has been successfully updated
+   Use case end
+
+**Extension:**
+* 2a. Client index is invalid (e.g., out of bounds, not a number)
+    * 2a1. System shows error message that client index is invalid
+
+      Step 2a1 repeats until Actor uses a valid client index
+
+      Use case resumes from Step 3
+
+* 2b. System detects no fields are provided to edit
+    * 2b1. System shows error message that no fields have been provided to edit
+
+      Step 2b1 repeats until Actor provides at least one field to edit
+  
+      Use case ends
+
+* 4a. One or more provided field formats are invalid (e.g. invalid phone number, invalid email)
+    * 4a1. System shows error message that the provided field format(s) are invalid
+
+      Step 4a1 repeats until Actor provides valid field formats
+
+      Use case resumes from Step 5
+
+* 4b. System detects duplicate client entry after editing (e.g., another client with the same name already exists in the address book)
+    * 4b1. System shows error message that the edited client details would result in a duplicate client entry
+
+      Use case ends
+  
+
+  
 ### Non-Functional Requirements
 
 1. The application should work on any mainstream OS as long as it has Java 17 or above installed.

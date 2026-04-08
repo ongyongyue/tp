@@ -725,4 +725,9 @@ testers are expected to do more *exploratory* testing.
 ## **Appendix: Planned Enhancements** ##
 Team size: 5
 
-1. 
+1. **List ordering**: Allow users to order the displayed list of clients or properties by different fields (e.g., name, price, size) using a command like `list orderby/price`. 
+2. **Duplicate client error message**: Make the error message for adding a duplicate client more specific. Currently, attempting to add a client with an identical name produces the generic message `This person already exists in the address book.` We plan to update this to: `A client with the name [NAME] already exists`. If this is a different person, consider using a distinguishing middle name or suffix (e.g., `Alice Tan 2`).
+3. **Duplicate phone number error message**: When adding a client with a phone number that already exists in the address book, the error message should specify which existing client has that phone number. For example: `The phone number [PHONE] is already associated with client [NAME].`
+4. **Duplicate property error message**: When adding a property that already exists in the address book, the error message should specify which existing property has that address. For example: `A property with the address [ADDRESS] already exists, owned by client [NAME].`
+5. **Out-of-range error message**: Make the error message for out-of-range index more descriptive. When a user types a command like `deleteProperty 99` and there are fewer than 99 contacts, the current error message is `Invalid property index!` We plan to improve this to: `Index 99 is out of range. The current list has [N] properties. Please enter an index between 1 and [N].`
+6. **Improve the edit command output**: Make successful editClient show what was actually changed. Currently, a successful edit command returns `Edited Person: [all fields]`, which makes it hard to see what changed. We plan to update the success message to show only the fields that were modified: e.g., `Edited contact Alex Yeoh: phone updated from 91234567 to 98765432.` This can be extended to editProperty as well, e.g., `Edited property 1: price updated from $500,000 to $550,000.`

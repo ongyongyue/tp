@@ -55,15 +55,15 @@ ClientVault is a **desktop app for managing clients and properties, optimized fo
 
 ### Viewing help : `help`
 
+![help](images/help.png)
 Shows a message explaining how to access the help page.
-
 
 Format: `help`
 
-### Adding a person: `addClient`
+### Adding a client: `addClient`
 
 ![addClient](images/addClient.png)
-Adds a person to the address book.
+Adds a client to ClientVault.
 
 Format: `add n/NAME c/CONTACT e/EMAIL [t/TAG]…`
 
@@ -71,7 +71,7 @@ Format: `add n/NAME c/CONTACT e/EMAIL [t/TAG]…`
 
 **Tip:**
 
-- A person can have any number of tags (including 0)
+- A client can have any number of tags (including 0)
   </box>
 
 Examples:
@@ -122,7 +122,7 @@ Shows the client's information and properties owned by client by index.
 
 Format: `viewClient INDEX`
 
-* Narrows to the person at the specified `INDEX`.
+* Narrows to the client at the specified `INDEX`.
 * The index refers to the index number shown in the displayed list on the client tab.
 * The index **must be a positive integer** 1, 2, 3, …
 
@@ -262,6 +262,7 @@ Format: `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZ
 </box>
 
 **Address Keyword Matching:**
+
 * The search is case-insensitive. e.g `jurong` will match `Jurong`
 * The order of the keywords does not matter. e.g. `Buona Vista` will match `Vista Buona`
 * Only full words will be matched e.g. `Woodland` will not match `Woodlands`
@@ -269,12 +270,14 @@ Format: `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZ
   e.g. `View Street` will return `Clementi Street 3`, `East View`
 
 **Price Range Filtering:**
+
 * Specify `pr/MIN_PRICE MAX_PRICE` to find properties within a price range.
 * Both boundaries are inclusive.
 * `MIN_PRICE` must be a non-negative integer.
 * `MIN_PRICE` must be smaller than or equal to `MAX_PRICE`.
 
 **Size Range Filtering:**
+
 * Specify `s/MIN_SIZE MAX_SIZE` to find properties within a size range.
 * Both boundaries are inclusive.
 * `MIN_SIZE` must be a non-negative integer.
@@ -290,17 +293,35 @@ Examples:
 
 ### Filtering properties by type: `filterType`
 
+![filterType](images/filterType.png)
 Filters properties by type (HDB, Condo).
 
 Format: `filterType type/TYPE`
+
 * The search is case-insensitive. e.g `hdb` will match `HDB`
 * Only full words will be matched e.g. `HD` will not match `HDB
 * Properties matching the specified type will be returned.
 * The client list will show all clients that own any of the matched properties.
 
 Examples:
+
 * `filterType type/HDB` returns all HDB properties.
 * `filterType type/Condo` returns all Condo properties.
+
+### Sorting properties:
+
+![sortProperty](images/sortProperty.png)
+Sorts properties list based on size or price.
+
+Format: `sortProperty st/SORT_TYPE o/ORDER`
+
+* The sort type must be either `price` or `size`
+* The order must be either `up` for ascending, or `down` for descending
+
+Examples:
+
+* `sortProperty st/price o/up` shows the properties ascending order based on price
+* `sortProperty st/size o/down` shows the properties in an descending order based on size
 
 ### Deleting a client : `deleteClient`
 
@@ -373,6 +394,18 @@ _Details coming soon ..._
 **Q**: How do I transfer my data to another Computer?<br>
 **A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous ClientVault home folder.
 
+**Q**: Where can I find my data file? <br>
+**A**: You can find it in `data/addressbook.json`.
+
+**Q**: Do I need to manually save my data before exiting?<br>
+**A**: You do not need to manually save. Saving is done automatically.
+
+**Q**: Do I need internet access to use this app?<br>
+**A**: You do not need an internet connection to access the full functionality of this app.
+
+**Q**: Why does my command fail for an invalid index?<br>
+**A**: The index searched may not match any record currently displayed. The index will only work on what is displayed in ClientVault.
+
 ---
 
 ## Known issues
@@ -385,17 +418,22 @@ _Details coming soon ..._
 ## Command summary
 
 
-Action              | Format, Examples
---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**Add Client**      | `addClient n/NAME c/CONTACT e/EMAIL [t/TAG]…​` <br> e.g., `add n/James Ho c/22224444 e/jamesho@example.com t/friend t/colleague`
-**Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`
-**Clear**           | `clear`
-**Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`
-**Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`
-**Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL] [t/TAG]...`<br> e.g., `editClient 2 n/Alex Yeoh`
-**Edit Property**   | `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`<br> e.g., `editProperty 1 a/123 Clementi Road pr/500000 s/1200 type/HDB`
-**Filter Client**   | `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`<br> e.g., `filterClient n/James Jake t/friends`
-**Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500`
-**List**            | `list`
-**Help**            | `help`
-**Remark Property** | `remarkProperty PROPERTY_INDEX  r/REMARKS` <br> e.g., `remarkProperty 2 r/Near Chinese Garden MRT`
+| Action              | Format, Examples                                                                                                                                          |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Help**            | `help`                                                                                                                                                    |
+| **Add Client**      | `addClient n/NAME c/CONTACT e/EMAIL [t/TAG]…` <br> e.g., `add n/James Ho c/22224444 e/jamesho@example.com t/friend t/colleague`                          |
+| **Add Property**    | `addProperty i/INDEX a/ADDRESS pr/PRICE s/SIZE type/TYPE` <br> e.g., `addProperty i/1 a/311 Clementi Ave 2, #02-25 pr/1200000 s/1200 type/HDB`            |
+| **List**            | `list`                                                                                                                                                    |
+| **View Client**     | `viewClient INDEX` <br> e.g., `viewClient 1`                                                                                                              |
+| **View Property**   | `viewProperty INDEX` <br> e.g., `viewProperty 1`                                                                                                          |
+| **Edit Client**     | `editClient INDEX [n/NAME] [c/CONTACT] [e/EMAIL] [t/TAG]...`<br> e.g., `editClient 2 n/Alex Yeoh`                                                         |
+| **Edit Property**   | `editProperty INDEX [a/ADDRESS] [pr/PRICE] [s/SIZE] [type/TYPE]`<br> e.g., `editProperty 1 a/123 Clementi Road pr/500000 s/1200 type/HDB`                 |
+| **Remark Property** | `remarkProperty PROPERTY_INDEX  r/REMARKS` <br> e.g., `remarkProperty 2 r/Near Chinese Garden MRT`                                                        |
+| **Filter Client**   | `filterClient [n/NAME_KEYWORDS] [t/TAG_KEYWORDS]`<br> e.g., `filterClient n/James Jake t/friends`                                                         |
+| **Filter Property** | `filterProperty [a/ADDRESS_KEYWORDS] [pr/MIN_PRICE MAX_PRICE] [s/MIN_SIZE MAX_SIZE]`<br> e.g., `filterProperty a/Clementi pr/1000000 1500000 s/1000 1500` |
+| **Filter Type**     | `filterType type/TYPE` <br> e.g., `filter type/HDB`                                                                                                       |
+| **Sort Property**   | `sortProperty st/SORT_TYPE o/ORDER` <br> e.g., `sortProperty st/price o/up`                                                                               |
+| **Delete Client**   | `deleteClient INDEX`<br> e.g., `deleteClient 3`                                                                                                           |
+| **Delete Property** | `deleteProperty INDEX`<br> e.g., `deleteProperty 3`                                                                                                       |
+| **Clear**           | `clear`                                                                                                                                                   |
+| **Exit**            | `exit`                                                                                                                                                    |

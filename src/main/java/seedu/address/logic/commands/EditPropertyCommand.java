@@ -30,6 +30,7 @@ import seedu.address.model.property.Size;
 public class EditPropertyCommand extends Command {
 
     public static final String COMMAND_WORD = "editProperty";
+    public static final String HDB_TYPE = "HDB";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the property identified "
             + "by the index number used in the displayed property list.\n"
@@ -52,6 +53,8 @@ public class EditPropertyCommand extends Command {
             "Property owner not found.";
     public static final String MESSAGE_NO_PROPERTIES =
             "No properties found. Please add a property first.";
+    public static final String MESSAGE_DUPLICATE_HDB_PROPERTY =
+            "A client can only have one HDB property.";
 
     private final Index index;
     private final EditPropertyDescriptor editPropertyDescriptor;
@@ -90,6 +93,7 @@ public class EditPropertyCommand extends Command {
         ensureNoDuplicateProperty(model, propertyToEdit, editedProperty);
 
         Person owner = findOwner(model, propertyToEdit);
+        ensureSingleHdbConstraint(owner, propertyToEdit, editedProperty);
 
         Set<Property> updatedProperties =
                 replacePropertyPreserveOrder(owner, propertyToEdit, editedProperty);
@@ -170,6 +174,29 @@ public class EditPropertyCommand extends Command {
                 if (!p.equals(original) && p.isSameProperty(edited)) {
                     throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
                 }
+            }
+        }
+    }
+
+    /**
+     * Ensures that editing the property does not cause the owner to have more than one HDB property.
+     *
+     * @param owner The owner of the property being edited.
+     * @param originalProperty The original property before editing.
+     * @param editedProperty The edited property to validate.
+     * @throws CommandException If the edited property would cause the owner to own multiple HDB properties.
+     */
+    private void ensureSingleHdbConstraint(Person owner,
+                                           Property originalProperty,
+                                           Property editedProperty) throws CommandException {
+
+        if (editedProperty.getPropertyType().value.equals(HDB_TYPE)) {
+            boolean hasOtherHdb = owner.getProperties().stream()
+                    .anyMatch(p -> !p.equals(originalProperty)
+                            && p.getPropertyType().value.equals(HDB_TYPE));
+
+            if (hasOtherHdb) {
+                throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
             }
         }
     }

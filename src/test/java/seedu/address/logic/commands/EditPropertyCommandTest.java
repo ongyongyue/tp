@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditPropertyCommand.EditPropertyDescriptor;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
@@ -297,7 +298,7 @@ public class EditPropertyCommandTest {
                 .withPhone("88888888")
                 .withEmail("edit@test.com")
                 .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
-                .withProperty("222 Clementi Ave 2", "2000000", "2000", "HDB")
+                .withProperty("222 Clementi Ave 2", "2000000", "2000", "Condo")
                 .build();
 
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
@@ -355,6 +356,36 @@ public class EditPropertyCommandTest {
         expectedModel.updateFilteredPropertyList(p -> p.equals(editedProperty));
 
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_editCondoToHdbWhenOwnerAlreadyHasHdb_throwsCommandException() {
+        Person personToEdit = new PersonBuilder()
+                .withName("Edit Test")
+                .withPhone("88888888")
+                .withEmail("edit@test.com")
+                .withProperty("111 Clementi Ave 1", "1000000", "1000", "HDB")
+                .withProperty("222 Clementi Ave 2", "2000000", "2000", "Condo")
+                .build();
+
+        Model model = new ModelManager(new AddressBook(), new UserPrefs());
+        model.addPerson(personToEdit);
+        model.updateFilteredPropertyList(p -> true);
+
+        Property propertyToEdit = model.getFilteredPropertyList().stream()
+                .filter(p -> p.getAddress().toString().equals("222 Clementi Ave 2"))
+                .findFirst()
+                .orElseThrow();
+
+        int index = model.getFilteredPropertyList().indexOf(propertyToEdit) + 1;
+
+        EditPropertyCommand.EditPropertyDescriptor descriptor =
+                new EditPropertyCommand.EditPropertyDescriptor();
+        descriptor.setType(new PropertyType("HDB"));
+
+        EditPropertyCommand command = new EditPropertyCommand(Index.fromOneBased(index), descriptor);
+
+        assertCommandFailure(command, model, EditPropertyCommand.MESSAGE_DUPLICATE_HDB_PROPERTY);
     }
 
     @Test

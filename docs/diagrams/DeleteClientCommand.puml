@@ -21,7 +21,6 @@ ModelManager --> DeleteClientCommand : lastShownList
 deactivate ModelManager
 
 DeleteClientCommand -> DeleteClientCommand : validate index
-note right : throws CommandException\nif index out of bounds
 
 DeleteClientCommand -> Person : getProperties()
 activate Person

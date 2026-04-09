@@ -5,7 +5,7 @@ pageNav: 3
 ---
 # ClientVault User Guide
 
-ClientVault is a **desktop app for managing clients and properties, optimized for use via a Comamnd Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI).ClientVault can get your property agent tasks done faster than traditional GUI apps, if you type fast.
+ClientVault is a **desktop app for managing clients and properties, optimized for use via a Comamnd Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). ClientVault can get your property agent tasks done faster than traditional GUI apps, if you type fast.
 
 <!-- * Table of Contents -->
 

@@ -13,9 +13,7 @@ pageNav: 3
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
-
----
+We would like to acknowledge the use of AI-assisted tools (e.g., ChatGPT) in supporting our development process. These tools were used to assist in generating JUnit test ideas, drafting Javadoc comments, and suggesting potential bugs and edge cases for further investigation.
 
 ## **Setting up, getting started**
 

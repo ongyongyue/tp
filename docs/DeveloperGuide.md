@@ -177,7 +177,7 @@ The `AddPropertyCommand` is executed through the following flow:
 6. `ModelManager` updates the underlying `AddressBook`.
 7. The command returns a `CommandResult`.
 
-For simplicity, the sequence diagram below focuses on the main interactions and omits lower-level validation details.
+For simplicity, the sequence diagram below focuses on the main interactions and omits lower-level validation details, including `Person` object creation, which will also be omitted in the sequence diagrams of all other features.
 
 The following sequence diagram illustrates the interactions:
 
@@ -198,7 +198,7 @@ The `EditClientCommand` is executed through the following flow:
 
 If one or more `t/` prefixes are provided, the client’s existing tags are replaced. If `t/` is provided without a value, all existing tags are cleared.
 
-For simplicity, the sequence diagram below focuses on the main interactions involved in updating the client and omits lower-level validation details such as index checks and exception handling.
+For simplicity, the sequence diagram below focuses on the main interactions involved in updating the client and omits lower-level details such as index checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 
@@ -221,7 +221,7 @@ The `EditPropertyCommand` is executed through the following flow:
 
 Only the specified fields are updated. All other fields remain unchanged.
 
-For simplicity, the sequence diagram below focuses on the main interactions involved in editing a property and omits lower-level validation details such as index checks and exception handling.
+For simplicity, the sequence diagram below focuses on the main interactions involved in editing a property and omits lower-level details such as index checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 
@@ -242,7 +242,7 @@ The `DeletePropertyCommand` is executed through the following flow:
 7. The command returns a `CommandResult` after the target client has been updated.
 
 For simplicity, the sequence diagram below focuses on the main interactions involved in updating the target client and
-omits lower-level validation details such as index checks, ownership checks, and exception handling.
+omits lower-level details such as index checks, ownership checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 

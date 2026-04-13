@@ -101,7 +101,7 @@ public class Property {
             return true;
         }
         return otherProperty != null
-                && address.equals(otherProperty.address);
+                && address.toString().equalsIgnoreCase(otherProperty.address.toString());
     }
 
     @Override

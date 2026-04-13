@@ -128,13 +128,14 @@ How the parsing works:
 The `Model` component,
 
 * stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores `Property` objects within each `Person` (as a `Set<Property>`), and maintains a separate flattened `ObservableList<Property>` across all persons, exposed as a filtered and sorted list for the UI.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 <box type="info" seamless>
 
-**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
+**Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list and a `Property` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag and one `Property` object per unique property, instead of each `Person` needing their own `Tag` and `Property` objects.<br>
 
 <puml src="diagrams/BetterModelClassDiagram.puml" width="450" />
 
@@ -176,7 +177,7 @@ The `AddPropertyCommand` is executed through the following flow:
 6. `ModelManager` updates the underlying `AddressBook`.
 7. The command returns a `CommandResult`.
 
-For simplicity, the sequence diagram below focuses on the main interactions and omits lower-level validation details.
+For simplicity, the sequence diagram below focuses on the main interactions and omits lower-level validation details, including `Person` object creation, which will also be omitted in the sequence diagrams of all other features as the process is detailed in the `addClient` feature.
 
 The following sequence diagram illustrates the interactions:
 
@@ -197,7 +198,7 @@ The `EditClientCommand` is executed through the following flow:
 
 If one or more `t/` prefixes are provided, the client’s existing tags are replaced. If `t/` is provided without a value, all existing tags are cleared.
 
-For simplicity, the sequence diagram below focuses on the main interactions involved in updating the client and omits lower-level validation details such as index checks and exception handling.
+For simplicity, the sequence diagram below focuses on the main interactions involved in updating the client and omits lower-level details such as index checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 
@@ -220,7 +221,7 @@ The `EditPropertyCommand` is executed through the following flow:
 
 Only the specified fields are updated. All other fields remain unchanged.
 
-For simplicity, the sequence diagram below focuses on the main interactions involved in editing a property and omits lower-level validation details such as index checks and exception handling.
+For simplicity, the sequence diagram below focuses on the main interactions involved in editing a property and omits lower-level details such as index checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 
@@ -241,7 +242,7 @@ The `DeletePropertyCommand` is executed through the following flow:
 7. The command returns a `CommandResult` after the target client has been updated.
 
 For simplicity, the sequence diagram below focuses on the main interactions involved in updating the target client and
-omits lower-level validation details such as index checks, ownership checks, and exception handling.
+omits lower-level details such as index checks, ownership checks, exception handling and `Person` object creation.
 
 The following sequence diagram illustrates the interactions:
 
@@ -451,23 +452,23 @@ Goal: Add a new client's details after first meeting
 
 * 2a. System detects error in Actor’s entry format or missing required fields
 	* 2a1. System requests for new entry with correct format
-	* 2a2. Actor enters data in correct format 
-      
-      Steps 2a1-2a2 repeats until Actor uses the proper format 
+	* 2a2. Actor enters data in correct format
+    
+      Steps 2a1-2a2 repeats until Actor uses the proper format
 
       Use case resumes from step 3
 
 * 2b. System detects duplicate client entry
     * 2b1. System shows an error message that the client already exists in the address book
     * 2b2. Actor enters data with different name
-      
+    
       Steps 2b1-2b2 repeats until Actor uses a different name
-  
+
       Use case resumes from step 3
 
 **Use Case 2: Adding a new property**
 
-Goal: Add a new property's details 
+Goal: Add a new property's details
 
 **MSS:**
 
@@ -489,10 +490,10 @@ Goal: Add a new property's details
       Use case resumes from step 3
 
 * 2b. System detects duplicate property entry
-    * 2b1. System shows an error message that the client already exists in the address book
+    * 2b1. System shows an error message that the property already exists in the address book
 
       Use case ends
-  
+
 * 2c. System detects client already has a 'HDB' type property
     * 2c1. System shows an error message that the client already has a 'HDB' type property
 
@@ -507,7 +508,7 @@ Goal:  See all properties listed under a specific client
 1. Actor identifies client index in the displayed client list
 2. Actor uses the viewClient feature with the client’s index as the parameter
 3. System retrieves client at that index
-4. System retrieves all properties linked to that client 
+4. System retrieves all properties linked to that client
 5. System displays the list of properties linked to client(indexed)
 6. Actor chooses the specific property by index
 7. System displays all relevant information about the specific property
@@ -520,12 +521,12 @@ Goal:  See all properties listed under a specific client
 	* 2a1. System shows error message that client index is invalid
 
       Step 2a1 repeats until Actor uses a valid client index
-       
+    
       Use case resumes from Step 3
 
 * 4a. Client exists but no property listed under client
 	* 4a1. System shows message that no property is listed under client
-    
+
       Use case ends
 
 **Use Case 4:  Delete property listing**
@@ -544,7 +545,7 @@ Goal: Delete a listing after a successful transaction to reduce clutter in the a
 **Extension:**
 * 3a. Property index is invalid (e.g., out of bounds, not a number)
   * 3a1. System shows error message that property index is invalid
-  
+
     Step 3a1 repeats until Actor uses a valid property index
 
     Use case resumes from Step 4
@@ -579,7 +580,7 @@ Goal: Edit a client's details to keep information updated and accurate
 **MSS:**
 
 1. Actor identifies client index in the displayed client list
-2. Actor uses the editClient feature with the client's index and the fields to update (name, phone, email, address, role, tags)
+2. Actor uses the editClient feature with the client's index and the fields to update (name, phone, email, tags)
 3. System verifies client exists at the given index
 4. System validates the provided field formats
 5. System updates the client with the new details
@@ -598,7 +599,7 @@ Goal: Edit a client's details to keep information updated and accurate
     * 2b1. System shows error message that no fields have been provided to edit
 
       Step 2b1 repeats until Actor provides at least one field to edit
-  
+
       Use case ends
 
 * 4a. One or more provided field formats are invalid (e.g. invalid phone number, invalid email)
@@ -608,7 +609,7 @@ Goal: Edit a client's details to keep information updated and accurate
 
       Use case resumes from Step 5
 
-* 4b. System detects duplicate client entry after editing (e.g., another client with the same name already exists in the address book)
+* 4b. System detects duplicate client entry after editing (e.g., another client with the same details already exists in the address book)
     * 4b1. System shows error message that the edited client details would result in a duplicate client entry
 
       Use case ends
@@ -618,7 +619,7 @@ Goal: Edit a client's details to keep information updated and accurate
 **Note:**
 
 - Edit Property works the same way, with the following differences:
-  - In step 2, the actor uses the property index and the fields to update (address, price, size, tags) instead of client index and client fields
+  - In step 2, the actor uses the property index and the fields to update (address, price, size, type) instead of client index and client fields
   - In extension 4b, the system will additionally check that the client will not have 2 HDB type properties after the edit on top of checking for duplicate property entry
     </box>
 
@@ -637,11 +638,14 @@ Goal: Filter clients by name to quickly find specific clients
 **Extensions:**
 * 2a. No keywords provided
     * 2a1. System shows error message requesting keywords
+    
       Step 2a1 repeats until Actor provides keywords.
+    
       Use case resumes from step 3
 
 * 3a. No clients match the keywords
     * 3a1. System shows message that no clients match the criteria
+    
       Use case ends
 
 <box type="note" seamless>
@@ -651,7 +655,49 @@ Goal: Filter clients by name to quickly find specific clients
 - Filter Property works the same way, with the following differences:
     - In step 1, the actor can filter by property address, price range, or size range instead of client name and tag fields
       </box>
-  
+
+**Use Case 8: Sort Property**
+
+Goal: Sort properties by price or size to quickly find the most suitable property for a client
+
+**MSS:**
+1. Actor enters sort criteria (price or size) with appropriate parameter (up or down)
+2. Actor uses the sortProperty feature with the criteria and parameter
+3. System sorts the property list according to the criteria and parameter
+4. System displays the sorted list of properties
+
+   Use case ends
+
+**Extensions:**
+* 2a. Invalid sort criteria or parameter provided (e.g., criteria other than price or size, parameter other than up or down)
+    * 2a1. System shows error message that the sort criteria or parameter is invalid
+    
+      Step 2a1 repeats until Actor provides valid sort criteria and parameter
+    
+      Use case resumes from step 3
+
+**Use Case 9: Exit Application**
+
+Goal: Exit the application
+
+**MSS:**
+1. Actor uses the exit command
+2. System saves the address book data and user preferences to files
+3. System exits
+
+   Use case ends
+
+**Use Case 10: Clearing all entries in the address book**
+
+Goal: Clear all entries in the address book to start afresh
+
+**MSS:**
+1. Actor uses the clear command
+2. System clears all entries in the address book
+3. System shows confirmation that the address book has been cleared
+
+    Use case ends
+
 ### Non-Functional Requirements
 
 1. The application should work on any mainstream OS as long as it has Java 17 or above installed.
@@ -708,6 +754,47 @@ testers are expected to do more *exploratory* testing.
    2. Test case: `exit`<br>
       Expected: Window is closed.
 
+### Adding a client
+
+1. Adding a client with valid details
+    1. Prerequisites: None
+    2. Test case: `addClient n/John Doe p/98765432 e/johnd@example.com t/buyer`<br>
+       Expected: New client is added to the list. Details of the added client shown in the status message.
+    3. Test case: `addClient n/Jane Smith p/91234567 e/janes@example.com t/seller`<br>
+       Expected: Another new client is added to the list. Details of the added client shown in the status message.
+
+2. Adding a client with invalid details
+    1. Prerequisites: None
+    2. Test case: `addClient n/ p/98765432 e/johnd@example.com t/buyer`<br>
+       Expected: No client is added. Error details shown in the status message.
+    3. Test case: `addClient n/John Doe p/98765432 e/invalidemail t/buyer`<br>
+       Expected: No client is added. Error details shown in the status message.
+    4. Other incorrect add commands to try: `addClient`, `addClient n/John`, `addClient n/John p/abc`, `...`<br>
+       Expected: Similar to previous.
+
+### Adding a property
+
+1. Adding a property to an existing client
+    1. Prerequisites: At least one client exists in the list.
+    2. Test case: `addProperty i/1 a/123 Main Street p/500000 s/1000 t/HDB`<br>
+       Expected: New property is added to the first client. Details of the added property shown in the status message.
+    3. Test case: `addProperty i/2 a/456 Side Street p/750000 s/1200 t/Condo`<br>
+       Expected: Another property is added to the first client. Details of the added property shown in the status message.
+
+2. Adding a property with invalid details
+    1. Prerequisites: At least one client exists in the list.
+    2. Test case: `addProperty i/1 a/ p/500000 s/1000 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+    3. Test case: `addProperty 1 a/123 Main Street p/abc s/1000 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+    4. Other incorrect add commands to try: `addProperty`, `addProperty x`, `addProperty 1 a/123 Main Street`, `...`<br>
+       Expected: Similar to previous.
+
+3. Adding a HDB property to a client who already has a HDB property
+    1. Prerequisites: At least one client exists in the list. The client already has a HDB type property.
+    2. Test case: `addProperty i/1 a/789 Another Street p/550000 s/900 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+
 ### Deleting a client
 
 1. Deleting a client while all clients are being shown
@@ -728,24 +815,165 @@ testers are expected to do more *exploratory* testing.
    3. Test case: `deleteClient x` (where x is larger than the list size)<br>
       Expected: No client is deleted. No properties are deleted. Error details shown in the status message.
 
+### Deleting a property
+
+1. Deleting a property while all properties are being shown
+   1. Prerequisites: List all properties using the `list` command. Multiple properties in the list.
+   2. Test case: `deleteProperty 1`<br>
+      Expected: First property is deleted from the list. Details of the deleted property shown in the status message.
+   3. Test case: `deleteProperty 0`<br>
+      Expected: No property is deleted. Error details shown in the status message.
+   4. Other incorrect delete commands to try: `deleteProperty`, `deleteProperty x` (where x is larger than the list size)<br>
+      Expected: Similar to previous.
+
+2. Deleting a property while a filtered property list is being shown
+   1. Prerequisites: A `filterProperty` command has been successfully executed. Only some properties in the list.
+   2. Test case: `deleteProperty 1`<br>
+      Expected: First property is deleted from the filtered list. Details of the deleted property shown in the status message.
+      1. Test case: `list`<br>
+         Expected: Deleted property is not present in the list of all properties.
+   3. Test case: `deleteProperty x` (where x is larger than the list size)<br>
+      Expected: No property is deleted. Error details shown in the status message.
+
+### Editing a client
+
+1. Editing a client with valid details
+   1. Prerequisites: At least one client exists in the list.
+   2. Test case: `editClient i/1 n/John Smith p/98765432`<br>
+      Expected: First client's name and phone are updated. Details of the edited client shown in the status message.
+   3. Test case: `editClient i/1 e/johnsmith@example.com`<br>
+      Expected: First client's email is updated. Details of the edited client shown in the status message.
+
+2. Editing a client with invalid details
+   1. Prerequisites: At least one client exists in the list.
+   2. Test case: `editClient i/1 n/`<br>
+      Expected: No client is edited. Error details shown in the status message.
+   3. Test case: `editClient 1 p/abc`<br>
+      Expected: No client is edited. Error details shown in the status message.
+   4. Other incorrect edit commands to try: `editClient`, `editClient x`, `editClient 1`, `...`<br>
+      Expected: Similar to previous.
+
+3. Editing a client results in duplicate client entry
+   1. Prerequisites: At least two clients exist in the list. Edit the details of one client with the details of another client.
+   2. Test case: `editClient i/1 n/Jane Smith p/91234567` <br>
+      Expected: No client is edited. Error details shown in the status message.
+
+### Editing a property
+
+1. Editing a property with valid details
+   1. Prerequisites: At least one property exists in the list.
+   2. Test case: `editProperty 1 a/456 Updated Street p/600000`<br>
+      Expected: First property's address and price are updated. Details of the edited property shown in the status message.
+   3. Test case: `editProperty 1 s/1100 t/Condo`<br>
+      Expected: First property's size and type are updated. Details of the edited property shown in the status message.
+
+2. Editing a property with invalid details
+   1. Prerequisites: At least one property exists in the list.
+   2. Test case: `editProperty 1 a/`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   3. Test case: `editProperty 1 p/abc`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   4. Other incorrect edit commands to try: `editProperty`, `editProperty x`, `editProperty 1`, `...`<br>
+      Expected: Similar to previous.
+
+3. Editing a property results in duplicate property entry or client having 2 HDB type properties
+   1. Prerequisites: At least two properties exist in the list. Edit the details of one property to have the same details as another property, or edit the type of a property to HDB when the client already has another HDB type property.
+   2. Test case: `editProperty 1 a/456 Side Street p/750000 s/1200 t/Condo`<br>
+      Expected: No property is edited. Error details shown in the status message.
+   3. Test case: `editProperty 1 t/HDB` (when the client already has another HDB type property) <br>
+      Expected: No property is edited. Error details shown in the status message.
+
+### Filtering for clients
+
+1. Filtering clients with valid keywords
+   1. Prerequisites: Multiple clients exist in the list.
+   2. Test case: `filterClient n/John`<br>
+      Expected: Only clients with "John" in their name are shown. Property list is filtered to show properties of these clients.
+   3. Test case: `filterClient n/Alex David`<br>
+      Expected: Clients with "Alex" or "David" in their name are shown. Property list is filtered accordingly.
+
+2. Filtering clients with invalid keywords
+   1. Prerequisites: Multiple clients exist in the list.
+   2. Test case: `filterClient n/`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   3. Test case: `filterClient`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   4. Other incorrect filter commands to try: `filterClient n/`, `filterClient x/keyword`, `...`<br>
+      Expected: Similar to previous.
+
+### Filtering for properties
+
+1. Filtering properties with valid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty a/Clementi`<br>
+      Expected: Only properties with "Clementi" in their address are shown. Client list is filtered to show owners of these properties.
+   3. Test case: `filterProperty p/500000 1000000 s/1000 1500`<br>
+      Expected: Properties within the price and size ranges are shown. Client list is filtered accordingly.
+
+2. Filtering properties with invalid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty`<br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   3. Test case: `filterProperty p/500000 1000` (will fail due to min_price being larger than max_price) <br>
+      Expected: No filtering occurs. Error details shown in the status message.
+   4. Other incorrect filter commands to try: `filterProperty x/criteria`, `filterProperty p/abc-1000000`, `...`<br>
+      Expected: Similar to previous.
+
+3. Filtering properties with criteria that match no properties
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `filterProperty a/Nonexistent`<br>
+      Expected: No properties are shown. Client list is empty. Message shown in the status message that no properties match the criteria.
+
+### Sorting properties
+
+1. Sorting properties with valid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `sortProperty st/price o/up`<br>
+      Expected: Properties are sorted by price in ascending order.
+   3. Test case: `sortProperty st/size o/down`<br>
+      Expected: Properties are sorted by size in descending order.
+
+2. Sorting properties with invalid criteria
+   1. Prerequisites: Multiple properties exist in the list.
+   2. Test case: `sortProperty st/invalid o/up`<br>
+      Expected: No sorting occurs. Error details shown in the status message.
+   3. Test case: `sortProperty st/price o/invalid`<br>
+      Expected: No sorting occurs. Error details shown in the status message.
+   4. Other incorrect sort commands to try: `sortProperty`, `sortProperty st/price`, `...`<br>
+      Expected: Similar to previous.
+
+### List command
+
+1. Listing all clients and properties
+   1. Prerequisites: None
+   2. Test case: `list`<br>
+      Expected: All clients and properties are displayed in the lists.
+   3. Test case: `list` after filtering<br>
+      Expected: All clients and properties are displayed, regardless of previous filtering.
+
+2. Listing with no data
+   1. Prerequisites: No clients or properties exist.
+   2. Test case: `list`<br>
+      Expected: Empty lists are displayed with appropriate messages.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
-   1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
-   2. Open the file and remove the name of the first client in the data file to create an invalid data file.
-   3. Save the file and re-launch the app by double-clicking the jar file.<br>
-      Expected: App starts with empty lists. Error details shown in the terminal log.
+    1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
+    2. Open the file and remove the name of the first client in the data file to create an invalid data file.
+    3. Save the file and re-launch the app by double-clicking the jar file.<br>
+       Expected: App starts with empty lists. Error details shown in the terminal log.
 
 2. Editing data files while maintaining validity
-   1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
-   2. Open the file and change the phone number of the first client in the data file to `98989898`.
-   3. Save the file and re-launch the app by double-clicking the jar file.<br>
-      Expected: App starts with the most recent data and the phone number of the first client in the list modified.
+    1. Prerequisites: Saved data file `[JAR file location]/data/addressbook.json` exists and contains valid non-empty data.
+    2. Open the file and change the phone number of the first client in the data file to `98989898`.
+    3. Save the file and re-launch the app by double-clicking the jar file.<br>
+       Expected: App starts with the most recent data and the phone number of the first client in the list modified.
 
 ## **Appendix: Planned Enhancements** ##
 Team size: 5
 
-1. **List ordering**: Allow users to order the displayed list of clients or properties by different fields (e.g., name, price, size) using a command like `list orderby/price`. 
+1. **List ordering**: Allow users to order the displayed list of clients or properties by different fields (e.g., name, price, size) using a command like `list orderby/price`.
 2. **Duplicate client error message**: Make the error message for adding a duplicate client more specific. Currently, attempting to add a client with an identical name produces the generic message `This person already exists in the address book.` We plan to update this to: `A client with the name [NAME] already exists`. If this is a different person, consider using a distinguishing middle name or suffix (e.g., `Alice Tan 2`).
 3. **Duplicate phone number error message**: When adding a client with a phone number that already exists in the address book, the error message should specify which existing client has that phone number. For example: `The phone number [PHONE] is already associated with client [NAME].`
 4. **Duplicate property error message**: When adding a property that already exists in the address book, the error message should specify which existing property has that address. For example: `A property with the address [ADDRESS] already exists, owned by client [NAME].`

@@ -173,7 +173,8 @@ public class AddPropertyCommand extends Command {
     private void ensurePropertyNotOwnedByAnotherClient(Model model, Person personToEdit)
             throws CommandException {
         for (Person person : model.getAddressBook().getPersonList()) {
-            if (!person.equals(personToEdit) && person.getProperties().contains(property)) {
+            if (!person.equals(personToEdit) && person.getProperties().stream()
+                    .anyMatch(p -> p.isSameProperty(property))) {
                 throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
             }
         }

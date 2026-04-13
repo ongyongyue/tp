@@ -812,6 +812,11 @@ testers are expected to do more *exploratory* testing.
     4. Other incorrect add commands to try: `addClient`, `addClient n/John`, `addClient n/John p/abc`, `...`<br>
        Expected: Similar to previous.
 
+3. Adding a duplicate client
+    1. Prerequisites: At least one client exists in the list. A client with the same details already exists in the list.
+    2. Test case: `addClient n/John Doe p/98765432
+       Expected: No client is added. Error details shown in the status message.
+
 ### Adding a property
 
 1. Adding a property to an existing client
@@ -833,6 +838,11 @@ testers are expected to do more *exploratory* testing.
 3. Adding a HDB property to a client who already has a HDB property
     1. Prerequisites: At least one client exists in the list. The client already has a HDB type property.
     2. Test case: `addProperty i/1 a/789 Another Street p/550000 s/900 t/HDB`<br>
+       Expected: No property is added. Error details shown in the status message.
+
+4. Adding a duplicate property
+    1. Prerequisites: At least one client exists in the list. A property with the same details already exists under the client.
+    2. Test case: `addProperty i/1 a/123 Main Street p/500000 s/1000 t/HDB`<br>
        Expected: No property is added. Error details shown in the status message.
 
 ### Deleting a client

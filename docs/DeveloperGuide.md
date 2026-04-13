@@ -163,6 +163,23 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Add Client feature
+
+The `addClient` feature allows users to add a new client to the address book.
+
+The `AddClientCommand` is executed through the following flow:
+
+1. The command checks whether the client to be added already exists using `Model#hasPerson(toAdd)`.
+2. If the client does not already exist, the command calls `Model#addPerson(toAdd)` to add the client.
+3. `ModelManager` updates the underlying `AddressBook`.
+4. The command returns a `CommandResult`.
+
+For simplicity, the sequence diagram below focuses on the main interactions involved in adding the client and omits lower-level validation details such as exception handling for duplicate clients.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/AddClientSequenceDiagram.puml" alt="AddClient sequence diagram" />
+
 ### Add Property feature
 
 The `addProperty` feature allows users to add a property to a client identified by the index in the displayed client list.

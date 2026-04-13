@@ -188,13 +188,13 @@ public class EditClientCommand extends Command {
         /**
          * Copy constructor.
          *
-         * @param DescriptortoCopy The descriptor to copy from.
+         * @param descriptortoCopy The descriptor to copy from.
          */
-        public EditClientDescriptor(EditClientDescriptor DescriptortoCopy) {
-            setName(DescriptortoCopy.name);
-            setPhone(DescriptortoCopy.phone);
-            setEmail(DescriptortoCopy.email);
-            setTags(DescriptortoCopy.tags);
+        public EditClientDescriptor(EditClientDescriptor descriptortoCopy) {
+            setName(descriptortoCopy.name);
+            setPhone(descriptortoCopy.phone);
+            setEmail(descriptortoCopy.email);
+            setTags(descriptortoCopy.tags);
         }
 
         public boolean isAnyFieldEdited() {

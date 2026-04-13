@@ -10,6 +10,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.property.Property;
 
 /**
  * Deletes a client identified using its displayed index from the address book.
@@ -49,37 +50,16 @@ public class DeleteClientCommand extends Command {
         // Collect information about deleted properties
         StringBuilder deletedPropertiesInfo = new StringBuilder();
 
-        // Delete all properties associated with this client
         if (!personToDelete.getProperties().isEmpty()) {
-            // Filter property list to show only properties belonging to this client
-            model.updateFilteredPropertyList(
-                    p -> personToDelete.getProperties().contains(p));
-
-            // Get all properties in the filtered list (all belonging to this client)
-            List<seedu.address.model.property.Property> propertiesToDelete =
-                    model.getFilteredPropertyList();
-
-            // Collect property details before deletion
             deletedPropertiesInfo.append("\nDeleted Properties:");
-            for (seedu.address.model.property.Property property : propertiesToDelete) {
+            for (Property property : personToDelete.getProperties()) {
                 deletedPropertiesInfo.append("\n- ").append(property);
-            }
-
-            // Delete each property starting from the last to avoid index shifting issues
-            for (int i = propertiesToDelete.size() - 1; i >= 0; i--) {
-                DeletePropertyCommand deletePropertyCommand =
-                        new DeletePropertyCommand(Index.fromZeroBased(i));
-                deletePropertyCommand.execute(model);
             }
         }
 
-        // After deleting properties, get the updated person reference (properties may have been removed)
-        Person personToDeleteUpdated = lastShownList.get(targetIndex.getZeroBased());
-
         // Delete the client
-        model.deletePerson(personToDeleteUpdated);
+        model.deletePerson(personToDelete);
 
-        // After deleting the client, update property filter to match remaining displayed clients
         List<Person> remainingClients = model.getFilteredPersonList();
         model.updateFilteredPropertyList(
                 p -> remainingClients.stream().anyMatch(person -> person.getProperties().contains(p)));

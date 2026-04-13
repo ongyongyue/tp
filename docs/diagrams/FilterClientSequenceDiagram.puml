@@ -3,35 +3,42 @@
 skinparam ArrowFontStyle plain
 
 box Logic LOGIC_COLOR_T1
-participant ":FilterClientCommand" as FCC LOGIC_COLOR
+participant ":FilterClientCommand" as FilterClientCommand LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
-participant ":Model" as M MODEL_COLOR
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant ":FilteredList<Person>" as FilteredPersons MODEL_COLOR
+participant ":FilteredList<Property>" as FilteredProperties MODEL_COLOR
 end box
 
-[-> FCC : execute(model)
-activate FCC
+[-> FilterClientCommand : execute(model)
+activate FilterClientCommand
 
-FCC -> M : updateFilteredPersonList(predicate)
-activate M
+FilterClientCommand -> ModelManager : updateFilteredPersonList(predicate)
+activate ModelManager
 
-M --> FCC :
-deactivate M
+ModelManager -> FilteredPersons : setPredicate(predicate)
+activate FilteredPersons
 
-FCC -> M : getFilteredPersonList()
-activate M
-M --> FCC : filteredPersonList
-deactivate M
+FilteredPersons --> ModelManager
+deactivate FilteredPersons
 
-FCC -> M : updateFilteredPropertyList(predicate)
-activate M
-M -> M : get properties linked to filtered persons
-M --> FCC:
+ModelManager --> FilterClientCommand
+deactivate ModelManager
 
+FilterClientCommand -> ModelManager : updateFilteredPropertyList(predicate)
+activate ModelManager
 
+ModelManager -> FilteredProperties : setPredicate(propertiesOfFilteredClients)
+activate FilteredProperties
 
+FilteredProperties --> ModelManager
+deactivate FilteredProperties
 
-[<-- FCC : CommandResult
-deactivate FCC
+ModelManager --> FilterClientCommand
+deactivate ModelManager
+
+[<-- FilterClientCommand : new CommandResult(...)
+deactivate FilterClientCommand
 @enduml

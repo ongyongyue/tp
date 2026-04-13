@@ -288,6 +288,30 @@ The following sequence diagram illustrates the interactions:
 
 <puml src="diagrams/DeletePropertySequenceDiagram.puml" alt="Interactions between DeletePropertyCommand and ModelManager for list updates" />
 
+### Filter Client feature
+The filterClient feature allows users to filter the client list by name keywords, tag keywords, or both, and automatically shows only the properties belonging to those filtered clients. This is done by updating the predicates on the FilteredList objects.
+
+The `FilterClientCommand` is executed through the following flow:
+1. The command is executed with a client predicate (`PersonMatchesFilterPredicate`) built from the user input, which may include name keywords, tag keywords, or both. 
+2. `FilterClientCommand` calls `Model#updateFilteredPersonList(predicate)`. 
+3. `ModelManager#updateFilteredPersonList(...)` updates the person `FilteredList` by calling `setPredicate(...)`.
+4. `FilterClientCommand` then calls `Model#updateFilteredPropertyList(predicate)`.
+5. `ModelManager#updateFilteredPropertyList(...)` updates the property `FilteredList` to show only properties belonging to the filtered clients.
+6. The command returns a `CommandResult` after both filtered lists have been updated.
+
+The following sequence diagram illustrates the interactions:
+
+<puml src="diagrams/FilterClientSequenceDiagram.puml" alt="Interactions between FilterClientCommand and ModelManager for filtered list updates" />
+
+#### Design Highlights
+
+* **Multi-criteria Filtering**: The `PersonMatchesFilterPredicate` implements the `Predicate<Person>` interface and supports filtering by name keywords and tag keywords simultaneously.
+* **Name Keyword Matching**: The predicate performs case-insensitive word matching on the client's name using `StringUtil.containsWordIgnoreCase()`. Multiple name keywords use OR logic — a client matches if their name contains any of the specified keywords.
+* **Tag Keyword Matching**: The predicate performs case-insensitive exact matching on the client's tags. Multiple tag keywords use OR logic — a client matches if they have any of the specified tags.
+* **AND Logic Between Criteria**: When both name and tag keywords are provided, a client must satisfy both conditions simultaneously to be included in the results.
+* **Cascading Filter**: After filtering clients, the command automatically updates the property list to show only properties belonging to those clients, providing a complete view of relevant data.
+* **Flexible Criteria**: At least one filter criterion (name or tag keywords) must be provided, but both can be combined.
+
 ### Filter Property feature
 
 The filter property feature allows users to filter properties by address keywords, price range, and size range, and automatically display the owners of those properties. This is done by updating the predicates on the `FilteredList` objects.

@@ -99,11 +99,10 @@ public class AddPropertyCommand extends Command {
             return true;
         }
 
-        if (!(other instanceof AddPropertyCommand)) {
+        if (!(other instanceof AddPropertyCommand otherAddPropertyCommand)) {
             return false;
         }
 
-        AddPropertyCommand otherAddPropertyCommand = (AddPropertyCommand) other;
         return targetIndex.equals(otherAddPropertyCommand.targetIndex)
                 && property.equals(otherAddPropertyCommand.property);
     }
@@ -156,7 +155,7 @@ public class AddPropertyCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_PROPERTY);
         }
 
-        ensurePropertyNotOwnedByAnotherClient(model, personToEdit);
+        ensureAddressUniqueAcrossAllClients(model, personToEdit);
 
         if (isHdbProperty(property) && personToEdit.hasHdbProperty()) {
             throw new CommandException(MESSAGE_DUPLICATE_HDB_PROPERTY);
@@ -164,17 +163,18 @@ public class AddPropertyCommand extends Command {
     }
 
     /**
-     * Ensures that the property is not already owned by another client.
+     * Ensures that the property address is unique and not already owned by any other client.
+     * Each property address can only be owned by one client.
      *
      * @param model        The model containing the address book data.
      * @param personToEdit The client attempting to own the property.
-     * @throws CommandException If the property is already owned by another client.
+     * @throws CommandException If the property address is already owned by another client.
      */
-    private void ensurePropertyNotOwnedByAnotherClient(Model model, Person personToEdit)
+    private void ensureAddressUniqueAcrossAllClients(Model model, Person personToEdit)
             throws CommandException {
         for (Person person : model.getAddressBook().getPersonList()) {
             if (!person.equals(personToEdit) && person.getProperties().stream()
-                    .anyMatch(p -> p.isSameProperty(property))) {
+                    .anyMatch(p -> p.getAddress().equals(property.getAddress()))) {
                 throw new CommandException(MESSAGE_PROPERTY_ALREADY_OWNED);
             }
         }
